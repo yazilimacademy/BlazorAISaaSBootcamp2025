@@ -1,0 +1,25 @@
+﻿@page "/auto-patladik"
+@inject IJSRuntime JSRuntime
+@rendermode InteractiveAuto
+
+
+<h3>AutoPatladik</h3>
+
+<button class="btn btn-primary" @onclick="ShowAlert">Show Alert</button>
+
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Hello World");
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void ShowAlert()
+    {
+        JSRuntime.InvokeVoidAsync("alert", "Hello World");
+    }
+}

@@ -1,0 +1,24 @@
+﻿@inject NavigationManager Navigation
+
+<div class="card" style="width: 18rem;">
+    <img src="..." class="card-img-top" alt="...">
+    <div class="card-body">
+        <h5 class="card-title">@Title</h5>
+        <p class="card-text">@Content</p>
+        <button @onclick="NavigateToArticle" class="btn btn-primary">Go somewhere</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public string Content { get; set; }
+    [Parameter]
+    public Guid Id { get; set; }
+
+    private void NavigateToArticle()
+    {
+        Navigation.NavigateTo($"/article/{Id}");
+    }
+}

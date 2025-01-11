@@ -1,0 +1,13 @@
+﻿@page "/article/{id:guid}"
+
+<h3>Gelen Id: @Id</h3>
+
+@code {
+    [Parameter, SupplyParameterFromQuery]
+    public Guid Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+}

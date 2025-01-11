@@ -1,0 +1,20 @@
+﻿@inject NavigationManager Navigation
+
+@rendermode InteractiveWebAssembly
+
+<button class="btn btn-primary" @onclick="GenerateIcon">@Text</button>
+
+@code {
+    [Parameter]
+    public string Text { get; set; }
+
+    [Parameter]
+    public string Url { get; set; }
+
+    private void GenerateIcon()
+    {
+        Console.WriteLine("Generate Icon");
+
+        Navigation.NavigateTo(Url);
+    }
+}
