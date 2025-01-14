@@ -1,0 +1,61 @@
+﻿@page "/icon-results-wasm"
+@using IconGeneratorAI.Domain.Dtos
+@using IconGeneratorAI.Domain.Entities
+@using System.Text.Json
+@inject HttpClient Http
+@rendermode InteractiveWebAssembly
+
+<h3>Icon Results Wasm</h3>
+
+<div class="container mt-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @if (IconResults is not null)
+        {
+            @foreach (var iconResult in IconResults)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm hover-effect">
+                        <img src="@iconResult.Url" class="card-img-top p-3" alt="@iconResult.Title">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">@iconResult.Title</h5>
+                            <a href="/icon-result-final/@iconResult.Id" class="btn btn-success">Detay</a>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        }
+        else
+        {
+            <p><em>Loading...</em></p>
+        }
+    </div>
+</div>
+
+<style>
+    .hover-effect {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .hover-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
+    }
+</style>
+
+@code {
+
+    private IEnumerable<GetAllIconResultsDto> IconResults = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        IconResults = await Http.GetFromJsonAsync<List<GetAllIconResultsDto>>("icon-results");
+
+        Console.WriteLine(IconResults.Count());
+
+        Console.WriteLine(JsonSerializer.Serialize(IconResults));
+
+        await base.OnInitializedAsync();
+    }
+
+}

@@ -5,6 +5,7 @@ using IconGeneratorAI.WebApp.Client.Pages;
 using IconGeneratorAI.WebApp.Components;
 using IconGeneratorAI.WebApp.Components.Account;
 using IconGeneratorAI.WebApp.Data;
+using IconGeneratorAI.WebApp.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,8 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5118/api/") });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,5 +73,7 @@ app.MapRazorComponents<App>()
 app.MapAdditionalIdentityEndpoints();
 
 app.MapControllers();
+
+await app.ApplyMigrationsAsync();
 
 app.Run();

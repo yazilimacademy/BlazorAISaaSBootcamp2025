@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IconGeneratorAI.Domain\IconGeneratorAI.Domain.csproj" />
     <ProjectReference Include="..\IconGeneratorAI.WebApp.Client\IconGeneratorAI.WebApp.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.0" />

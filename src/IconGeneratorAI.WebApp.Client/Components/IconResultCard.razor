@@ -1,0 +1,31 @@
+﻿@using IconGeneratorAI.Domain.Entities
+@inject NavigationManager Navigation
+@rendermode InteractiveWebAssembly
+
+
+<div class="col">
+    <div class="card h-100 shadow-sm hover-effect">
+        <img src="@Url" class="card-img-top p-3" alt="@Title">
+        <div class="card-body">
+            <h5 class="card-title text-center">@Title</h5>
+            <button @onclick="@(() =>NavigateToIconResultFinalPage(Id))" class="btn btn-success">Detay</button>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Url { get; set; }
+
+    private void NavigateToIconResultFinalPage(Guid id)
+    {
+        Navigation.NavigateTo($"/icon-result-final/{id}");
+    }
+}
