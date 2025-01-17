@@ -1,0 +1,148 @@
+﻿@page "/create-icon"
+@using System.ComponentModel.DataAnnotations
+@inject HttpClient Http
+
+@rendermode InteractiveWebAssembly
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4">Generate Your Dream Icon</h3>
+                    <EditForm Model="@formModel" OnValidSubmit="HandleValidSubmit" FormName="createIconForm">
+                        <div class="mb-4">
+                            <label for="prompt" class="form-label fw-semibold">Prompt</label>
+                            <InputText id="prompt" class="form-control form-control-lg"
+                                placeholder="Describe your icon..." @bind-Value="formModel.Prompt" />
+                            <ValidationMessage For="@(() => formModel.Prompt)" class="text-danger" />
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="size" class="form-label fw-semibold">Size</label>
+                            <InputSelect id="size" class="form-select form-select-lg" @bind-Value="formModel.Size">
+                                <option value="">Select size...</option>
+                                @foreach (var size in sizes)
+                                {
+                                    <option value="@size">@size</option>
+                                }
+                            </InputSelect>
+                            <ValidationMessage For="@(() => formModel.Size)" class="text-danger" />
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            @if (isLoading)
+                            {
+                                <button type="submit" class="btn btn-primary btn-lg" disabled>
+                                    <i class="bi bi-magic"></i> Generating...
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-magic"></i> Generate Icon
+                                </button>
+                            }
+                        </div>
+                    </EditForm>
+
+                    @if (isLoading)
+                    {
+                        <div class="text-center mt-4">
+                            <div class="custom-spinner mx-auto"></div>
+                            <p class="mt-2">Creating your icon...</p>
+                        </div>
+                    }
+                    else if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        <div class="mt-4 text-center">
+                            <img src="@imageUrl" alt="@formModel.Prompt" class="img-fluid rounded shadow-sm fade-in" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private FormModel formModel = new();
+    private bool isLoading = false;
+    private string imageUrl = string.Empty;
+
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            isLoading = true;
+            var response = await Http.PostAsJsonAsync("generate", formModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var imageBytes = await response.Content.ReadAsByteArrayAsync();
+
+                imageUrl = $"data:image/webp;base64,{Convert.ToBase64String(imageBytes)}";
+
+            }
+            else
+            {
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    Console.WriteLine("Not found");
+                }
+                else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    Console.WriteLine("Bad request");
+                }
+                else
+                {
+                    Console.WriteLine("Something went wrong");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    internal class FormModel
+    {
+        [Required, MinLength(3), MaxLength(500)]
+        public string Prompt { get; set; }
+        [Required]
+        public string Size { get; set; }
+    }
+
+    internal class SizeModel
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
+
+
+    private List<string> sizes = new()
+{
+"1365x1024",
+"1024x1024",
+"1365x1024",
+"1024x1365",
+"1536x1024",
+"1024x1536",
+"1920x1024",
+"1024x1920",
+"1024x2048",
+"2048x1024",
+"1434x1024",
+"1024x1434",
+"1024x1280",
+"1280x1024",
+"1024x1707",
+"1707x1024",
+};
+}
