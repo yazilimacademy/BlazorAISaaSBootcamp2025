@@ -1,13 +1,8 @@
-﻿@page "/article/{id:guid}"
-
-<h3>Gelen Id: @Id</h3>
-
-@code {
-    [Parameter, SupplyParameterFromQuery]
-    public Guid Id { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-
-    }
-}
+﻿@page "/article"
+<button class="btn">Button</button>
+<button class="btn btn-neutral">Neutral</button>
+<button class="btn btn-primary">Primary</button>
+<button class="btn btn-secondary">Secondary</button>
+<button class="btn btn-accent">Accent</button>
+<button class="btn btn-ghost">Ghost</button>
+<button class="btn btn-link">Link</button>

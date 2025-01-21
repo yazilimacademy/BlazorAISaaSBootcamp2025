@@ -1,65 +1,112 @@
 ﻿@page "/create-icon"
 @using System.ComponentModel.DataAnnotations
+@using IconGeneratorAI.Domain.Dtos
 @inject HttpClient Http
 
 @rendermode InteractiveWebAssembly
 
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6">
-            <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-body p-4">
-                    <h3 class="card-title text-center mb-4">Generate Your Dream Icon</h3>
-                    <EditForm Model="@formModel" OnValidSubmit="HandleValidSubmit" FormName="createIconForm">
-                        <div class="mb-4">
-                            <label for="prompt" class="form-label fw-semibold">Prompt</label>
-                            <InputText id="prompt" class="form-control form-control-lg"
-                                placeholder="Describe your icon..." @bind-Value="formModel.Prompt" />
-                            <ValidationMessage For="@(() => formModel.Prompt)" class="text-danger" />
-                        </div>
+<div class="min-h-screen bg-base-200 py-8 px-4">
+    <div class="max-w-2xl mx-auto">
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title text-2xl font-bold text-center mb-6">Generate Your Dream Icon</h2>
 
-                        <div class="mb-4">
-                            <label for="size" class="form-label fw-semibold">Size</label>
-                            <InputSelect id="size" class="form-select form-select-lg" @bind-Value="formModel.Size">
-                                <option value="">Select size...</option>
-                                @foreach (var size in sizes)
-                                {
-                                    <option value="@size">@size</option>
-                                }
-                            </InputSelect>
-                            <ValidationMessage For="@(() => formModel.Size)" class="text-danger" />
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            @if (isLoading)
-                            {
-                                <button type="submit" class="btn btn-primary btn-lg" disabled>
-                                    <i class="bi bi-magic"></i> Generating...
+                <EditForm Model="@formModel" OnValidSubmit="HandleValidSubmit" FormName="createIconForm">
+                    <div class="form-control w-full mb-4">
+                        <label class="label">
+                            <span class="label-text font-medium">Prompt</span>
+                            <span class="label-text-alt text-base-content/70">Be descriptive for better results</span>
+                        </label>
+                        <div class="relative">
+                            <InputTextArea id="prompt"
+                                class="textarea textarea-bordered min-h-[120px] text-base leading-relaxed focus:textarea-primary w-full bg-base-100"
+                                placeholder="Describe your dream icon in detail. For example: A minimalist logo of a mountain peak at sunset, with geometric shapes, using pastel colors..."
+                                @bind-Value="formModel.Prompt" />
+                            <div class="absolute bottom-3 right-3">
+                                <button @onclick="HandleMagicClick" type="button"
+                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-base-200/50 transition-all duration-300 hover:scale-110 hover:rotate-12 group"
+                                    disabled="@isMagicLoading">
+                                    @if (isMagicLoading)
+                                    {
+                                        <span class="loading loading-spinner loading-sm"></span>
+                                    }
+                                    else
+                                    {
+                                        <img src="/icons/magic-stick-3-svgrepo-com.svg" alt="Magic Wand"
+                                            class="w-5 h-5 [&>path]:fill-yellow-400 yellow-400 relative group-hover:animate-pulse"
+                                            title="Get AI suggestions" />
+                                    }
+                                    <div class="absolute inset-0 -z-10 animate-pulse group-hover:animate-none">
+                                        <div
+                                            class="absolute inset-0 rounded-lg bg-yellow-400/20 blur-sm group-hover:blur-md transition-all">
+                                        </div>
+                                    </div>
                                 </button>
-                            }
-                            else
-                            {
-                                <button type="submit" class="btn btn-primary btn-lg">
-                                    <i class="bi bi-magic"></i> Generate Icon
-                                </button>
-                            }
+                            </div>
                         </div>
-                    </EditForm>
+                        <label class="label">
+                            <span class="label-text-alt text-base-content/70">
+                                <span class="@(formModel.Prompt?.Length > 450 ? "text-error" : "")">
+                                    @(formModel.Prompt?.Length ?? 0)/500
+                                </span>
+                            </span>
+                        </label>
+                        <ValidationMessage For="@(() => formModel.Prompt)" class="text-error text-sm mt-1" />
+                    </div>
 
-                    @if (isLoading)
-                    {
-                        <div class="text-center mt-4">
-                            <div class="custom-spinner mx-auto"></div>
-                            <p class="mt-2">Creating your icon...</p>
+                    <div class="form-control w-full mb-6">
+                        <label class="label">
+                            <span class="label-text font-medium">Size</span>
+                        </label>
+                        <InputSelect id="size" class="select select-bordered select-lg w-full"
+                            @bind-Value="formModel.Size">
+                            <option value="">Select size...</option>
+                            @foreach (var size in sizes)
+                            {
+                                <option value="@size">@size</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
+                    </div>
+
+                    <div class="card-actions">
+                        @if (isLoading)
+                        {
+                            <button class="btn btn-primary btn-lg w-full" disabled>
+                                <span class="loading loading-spinner"></span>
+                                Generating...
+                            </button>
+                        }
+                        else
+                        {
+                            <button type="submit" class="btn btn-primary btn-lg w-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                                Generate Icon
+                            </button>
+                        }
+                    </div>
+                </EditForm>
+
+                @if (isLoading)
+                {
+                    <div class="flex flex-col items-center mt-8">
+                        <span class="loading loading-spinner loading-lg text-primary"></span>
+                        <p class="mt-4 text-base-content/70">Creating your icon...</p>
+                    </div>
+                }
+                else if (!string.IsNullOrEmpty(imageUrl))
+                {
+                    <div class="mt-8">
+                        <div
+                            class="w-full rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl">
+                            <img src="@imageUrl" alt="@formModel.Prompt" class="w-full h-auto" />
                         </div>
-                    }
-                    else if (!string.IsNullOrEmpty(imageUrl))
-                    {
-                        <div class="mt-4 text-center">
-                            <img src="@imageUrl" alt="@formModel.Prompt" class="img-fluid rounded shadow-sm fade-in" />
-                        </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -69,6 +116,7 @@
     private FormModel formModel = new();
     private bool isLoading = false;
     private string imageUrl = string.Empty;
+    private bool isMagicLoading = false;
 
 
     private async Task HandleValidSubmit()
@@ -108,6 +156,27 @@
         finally
         {
             isLoading = false;
+        }
+    }
+
+    private async Task HandleMagicClick()
+    {
+        try
+        {
+            isMagicLoading = true;
+            using var client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:5118/api/");
+
+            var response = await client.GetFromJsonAsync<GetPromptResponseDto>($"prompts/improve?prompt={formModel.Prompt}");
+            formModel.Prompt = response.ImprovedPrompt;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isMagicLoading = false;
         }
     }
 
