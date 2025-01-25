@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconGeneratorAI.WebApp.Clie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconGeneratorAI.Domain", "src\IconGeneratorAI.Domain\IconGeneratorAI.Domain.csproj", "{485CDA25-EFAE-487A-8EA4-11F9A6FDDE85}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IconGeneratorAI.Persistence", "src\IconGeneratorAI.Persistence\IconGeneratorAI.Persistence.csproj", "{00BA8CFE-8F7F-4D94-8C57-2390B2FBBA40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{485CDA25-EFAE-487A-8EA4-11F9A6FDDE85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{485CDA25-EFAE-487A-8EA4-11F9A6FDDE85}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{485CDA25-EFAE-487A-8EA4-11F9A6FDDE85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00BA8CFE-8F7F-4D94-8C57-2390B2FBBA40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00BA8CFE-8F7F-4D94-8C57-2390B2FBBA40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00BA8CFE-8F7F-4D94-8C57-2390B2FBBA40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00BA8CFE-8F7F-4D94-8C57-2390B2FBBA40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,5 +43,6 @@ Global
 		{9BAB3C92-64D1-48E1-81F2-6E308489EAA0} = {6E296ED7-4362-4D01-BBAB-ED0CF4C94A31}
 		{CE77FF2B-5280-45E2-A627-E71499983D01} = {6E296ED7-4362-4D01-BBAB-ED0CF4C94A31}
 		{485CDA25-EFAE-487A-8EA4-11F9A6FDDE85} = {6E296ED7-4362-4D01-BBAB-ED0CF4C94A31}
+		{00BA8CFE-8F7F-4D94-8C57-2390B2FBBA40} = {6E296ED7-4362-4D01-BBAB-ED0CF4C94A31}
 	EndGlobalSection
 EndGlobal
