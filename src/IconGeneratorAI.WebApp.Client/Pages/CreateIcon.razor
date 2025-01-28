@@ -1,6 +1,7 @@
 ﻿@page "/create-icon"
 @using System.ComponentModel.DataAnnotations
 @using IconGeneratorAI.Domain.Dtos
+@using IconGeneratorAI.Domain.Entities
 @inject HttpClient Http
 
 @rendermode InteractiveWebAssembly
@@ -98,12 +99,12 @@
                         <p class="mt-4 text-base-content/70">Creating your icon...</p>
                     </div>
                 }
-                else if (!string.IsNullOrEmpty(imageUrl))
+                else if (iconResult is not null)
                 {
                     <div class="mt-8">
                         <div
                             class="w-full rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl">
-                            <img src="@imageUrl" alt="@formModel.Prompt" class="w-full h-auto" />
+                            <img src="@iconResult.Url" alt="@formModel.Prompt" class="w-full h-auto" />
                         </div>
                     </div>
                 }
@@ -115,8 +116,8 @@
 @code {
     private FormModel formModel = new();
     private bool isLoading = false;
-    private string imageUrl = string.Empty;
     private bool isMagicLoading = false;
+    private IconResult iconResult = null;
 
 
     private async Task HandleValidSubmit()
@@ -124,14 +125,11 @@
         try
         {
             isLoading = true;
-            var response = await Http.PostAsJsonAsync("generate", formModel);
+            var response = await Http.PostAsJsonAsync("/api/icon-results/", formModel);
 
             if (response.IsSuccessStatusCode)
             {
-                var imageBytes = await response.Content.ReadAsByteArrayAsync();
-
-                imageUrl = $"data:image/webp;base64,{Convert.ToBase64String(imageBytes)}";
-
+                iconResult = await response.Content.ReadFromJsonAsync<IconResult>();
             }
             else
             {
@@ -164,10 +162,8 @@
         try
         {
             isMagicLoading = true;
-            using var client = new HttpClient();
-            client.BaseAddress = new Uri("http://localhost:5118/api/");
 
-            var response = await client.GetFromJsonAsync<GetPromptResponseDto>($"prompts/improve?prompt={formModel.Prompt}");
+            var response = await Http.GetFromJsonAsync<GetPromptResponseDto>($"/api/prompts/improve?prompt={formModel.Prompt}");
             formModel.Prompt = response.ImprovedPrompt;
         }
         catch (Exception ex)

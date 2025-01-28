@@ -28,7 +28,7 @@ public sealed class UserBalanceConfiguration : IEntityTypeConfiguration<UserBala
 
 
               // Common Properties
-              builder.Property(x => x.CreatedAt)
+              builder.Property(x => x.CreatedAt) // created_at
                      .IsRequired();
 
               builder.Property(x => x.CreatedByUserId)
