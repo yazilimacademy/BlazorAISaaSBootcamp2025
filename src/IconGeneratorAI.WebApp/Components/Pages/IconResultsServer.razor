@@ -1,6 +1,6 @@
 ﻿@page "/icon-results-server"
 @using IconGeneratorAI.Domain.Entities
-@using IconGeneratorAI.WebApp.Data
+@using IconGeneratorAI.Persistence.EntityFramework.Contexts
 @using IconGeneratorAI.WebApp.Client.Components
 @using Microsoft.EntityFrameworkCore
 @inject ApplicationDbContext DbContext
@@ -43,10 +43,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        IconResults = await DbContext
-        .IconResults
-        .AsNoTracking()
-        .ToListAsync();
+
     }
 
 }

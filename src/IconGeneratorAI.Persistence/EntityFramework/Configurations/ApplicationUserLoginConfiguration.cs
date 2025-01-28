@@ -1,9 +1,8 @@
-﻿using NoobGGApp.Domain.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using IconGeneratorAI.Domain.Identity;
 
-namespace NoobGGApp.Infrastructure.Persistence.EntityFramework.Configurations;
+namespace IconGeneratorAI.Persistence.EntityFramework.Configurations;
 
 public sealed class ApplicationUserLoginConfiguration : IEntityTypeConfiguration<ApplicationUserLogin>
 {

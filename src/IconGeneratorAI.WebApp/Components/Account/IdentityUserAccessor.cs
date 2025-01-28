@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Identity;
-using IconGeneratorAI.WebApp.Data;
+using IconGeneratorAI.Domain.Identity;
 
 namespace IconGeneratorAI.WebApp.Components.Account;
 

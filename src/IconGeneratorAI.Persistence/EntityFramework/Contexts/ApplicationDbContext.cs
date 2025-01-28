@@ -2,7 +2,6 @@ using IconGeneratorAI.Domain.Entities;
 using IconGeneratorAI.Domain.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NoobGGApp.Domain.Identity;
 
 namespace IconGeneratorAI.Persistence.EntityFramework.Contexts;
 
