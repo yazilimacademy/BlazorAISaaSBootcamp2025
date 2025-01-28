@@ -1,14 +1,14 @@
 {
 	"devDependencies": {
-		"daisyui": "^4.12.23",
-		"postcss": "^8.4.21",
-		"autoprefixer": "^10.4.15"
+		"autoprefixer": "^10.4.15",
+		"postcss": "^8.4.21"
 	},
 	"dependencies": {
+		"daisyui": "^4.12.23",
 		"tailwindcss": "3.4.17"
 	},
-	"packageManager": "yarn@4.6.0",
 	"scripts": {
 		"dev:css": "tailwindcss -i ./Styles/app.css -o ./wwwroot/app.css --watch"
-	}
+	},
+	"packageManager": "pnpm@10.1.0+sha512.c89847b0667ddab50396bbbd008a2a43cf3b581efd59cf5d9aa8923ea1fb4b8106c041d540d08acb095037594d73ebc51e1ec89ee40c88b30b8a66c0fae0ac1b"
 }

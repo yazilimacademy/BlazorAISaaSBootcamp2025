@@ -46,5 +46,7 @@ public sealed class UserBalanceTransactionConfiguration : IEntityTypeConfigurati
         builder.Property(x => x.UpdatedByUserId)
         .HasMaxLength(100)
         .IsRequired(false);
+
+        builder.ToTable("user_balance_transactions");
     }
 }

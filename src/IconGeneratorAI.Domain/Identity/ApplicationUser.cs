@@ -3,7 +3,7 @@ using IconGeneratorAI.Domain.Entities;
 using IconGeneratorAI.Domain.ValueObjects;
 using Microsoft.AspNetCore.Identity;
 
-namespace NoobGGApp.Domain.Identity
+namespace IconGeneratorAI.Domain.Identity
 {
     public sealed class ApplicationUser : IdentityUser<Guid>, ICreatedByEntity, IUpdatedByEntity
     {

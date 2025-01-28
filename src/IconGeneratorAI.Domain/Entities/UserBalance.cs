@@ -1,5 +1,5 @@
 using IconGeneratorAI.Domain.Common;
-using NoobGGApp.Domain.Identity;
+using IconGeneratorAI.Domain.Identity;
 
 namespace IconGeneratorAI.Domain.Entities;
 

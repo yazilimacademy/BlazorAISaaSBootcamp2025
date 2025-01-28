@@ -7,39 +7,41 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Configurations;
 
 public sealed class UserBalanceConfiguration : IEntityTypeConfiguration<UserBalance>
 {
-    public void Configure(EntityTypeBuilder<UserBalance> builder)
-    {
-        // ID - Primary Key
-        builder.HasKey(x => x.UserId);
+       public void Configure(EntityTypeBuilder<UserBalance> builder)
+       {
+              // ID - Primary Key
+              builder.HasKey(x => x.UserId);
 
-        // Relationships
-        builder.HasOne(x => x.User)
-               .WithMany()
-               .HasForeignKey(x => x.UserId)
-               .IsRequired();
+              // Relationships
+              builder.HasOne(x => x.User)
+                     .WithMany()
+                     .HasForeignKey(x => x.UserId)
+                     .IsRequired();
 
-        // Properties
-        builder.Property(x => x.Balance)
-               .IsRequired();
+              // Properties
+              builder.Property(x => x.Balance)
+                     .IsRequired();
 
-        builder.HasMany<UserBalanceTransaction>(x => x.Transactions)
-        .WithOne(y => y.UserBalance)
-        .HasForeignKey(y => y.UserBalanceId);
+              builder.HasMany<UserBalanceTransaction>(x => x.Transactions)
+              .WithOne(y => y.UserBalance)
+              .HasForeignKey(y => y.UserBalanceId);
 
 
-        // Common Properties
-        builder.Property(x => x.CreatedAt)
-               .IsRequired();
+              // Common Properties
+              builder.Property(x => x.CreatedAt)
+                     .IsRequired();
 
-        builder.Property(x => x.CreatedByUserId)
-               .HasMaxLength(100)
-               .IsRequired();
+              builder.Property(x => x.CreatedByUserId)
+                     .HasMaxLength(100)
+                     .IsRequired();
 
-        builder.Property(x => x.UpdatedAt)
-               .IsRequired(false);
+              builder.Property(x => x.UpdatedAt)
+                     .IsRequired(false);
 
-        builder.Property(x => x.UpdatedByUserId)
-               .HasMaxLength(100)
-               .IsRequired(false);
-    }
+              builder.Property(x => x.UpdatedByUserId)
+                     .HasMaxLength(100)
+                     .IsRequired(false);
+
+              builder.ToTable("user_balances");
+       }
 }

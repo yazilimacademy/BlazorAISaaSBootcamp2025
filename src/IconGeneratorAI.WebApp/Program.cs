@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using IconGeneratorAI.WebApp.Client.Pages;
 using IconGeneratorAI.WebApp.Components;
 using IconGeneratorAI.WebApp.Components.Account;
-using IconGeneratorAI.WebApp.Data;
 using IconGeneratorAI.WebApp.Extensions;
+using IconGeneratorAI.Persistence.EntityFramework.Contexts;
+using IconGeneratorAI.Domain.Identity;
+using IconGeneratorAI.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,9 +29,8 @@ builder.Services.AddAuthentication(options =>
     })
     .AddIdentityCookies();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(connectionString));
+builder.Services.AddPersistence(builder.Configuration);
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)

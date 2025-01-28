@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using IconGeneratorAI.WebApp.Components.Account.Pages;
 using IconGeneratorAI.WebApp.Components.Account.Pages.Manage;
-using IconGeneratorAI.WebApp.Data;
+using IconGeneratorAI.Domain.Identity;
 
 namespace Microsoft.AspNetCore.Routing;
 
