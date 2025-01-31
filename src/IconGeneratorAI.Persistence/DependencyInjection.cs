@@ -13,7 +13,7 @@ public static class DependencyInjection
         services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")
         , options => options.MigrationsHistoryTable("__ef_migrations_history"))
-        .UseUpperSnakeCaseNamingConvention()
+        .UseSnakeCaseNamingConvention()
         );
 
         return services;
