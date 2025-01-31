@@ -28,4 +28,9 @@ public sealed record FullName
 
         return new FullName(names[0], names[1]);
     }
+
+    public override string ToString()
+    {
+        return $"{FirstName} {LastName}";
+    }
 }

@@ -5,6 +5,7 @@ using IconGeneratorAI.Persistence.EntityFramework.Contexts;
 using IconGeneratorAI.WebApp.Models;
 using IconGeneratorAI.WebApp.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace IconGeneratorAI.WebApp.Controllers
 {
@@ -24,6 +25,13 @@ namespace IconGeneratorAI.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync(CancellationToken cancellationToken)
         {
+
+            var aiModel = await _dbContext
+            .AIModels
+            .AsNoTracking()
+            .Where(x => x.Sizes.Contains("128x128"))
+            .FirstOrDefaultAsync(x => x.Id == Guid.Parse("00000000-0000-0000-0000-000000000000"), cancellationToken);
+
             // var iconResults = await _dbContext
             // .IconResults
             //     .AsNoTracking()

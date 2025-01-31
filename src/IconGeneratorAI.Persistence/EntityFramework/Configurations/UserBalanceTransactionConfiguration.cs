@@ -29,7 +29,7 @@ public sealed class UserBalanceTransactionConfiguration : IEntityTypeConfigurati
 
         builder.Property(x => x.Type) // 0,1,2 // Add, Remove
         .HasConversion<int>()
-        .HasColumnType("TINYINT") // 0,255
+        .HasColumnType("SMALLINT") // 0,255
         .IsRequired();
 
         // Common Properties

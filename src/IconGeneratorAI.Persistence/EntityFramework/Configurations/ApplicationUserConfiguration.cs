@@ -1,4 +1,5 @@
 using IconGeneratorAI.Domain.Identity;
+using IconGeneratorAI.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -33,9 +34,23 @@ public sealed class ApplicationUserConfiguration : IEntityTypeConfiguration<Appl
         builder.Property(u => u.PhoneNumber).IsRequired(false);
         builder.Property(u => u.PhoneNumber).HasMaxLength(20);
 
-        //FullName
-        builder.Property(u => u.FullName).IsRequired();
-        builder.Property(u => u.FullName).HasMaxLength(100);
+        // //FullName
+        // builder.Property(u => u.FullName)
+        // .HasConversion(x => x.ToString(), x => FullName.Create(x))
+        // .IsRequired();
+
+        builder.OwnsOne(x => x.FullName, fullNameBuilder =>
+        {
+            fullNameBuilder.Property(x => x.FirstName)
+            .IsRequired()
+            .HasMaxLength(100)
+            .HasColumnName("first_name");
+
+            fullNameBuilder.Property(x => x.LastName)
+            .IsRequired()
+            .HasMaxLength(100)
+            .HasColumnName("last_name");
+        });
 
 
         // //FirstName

@@ -9,6 +9,7 @@ public sealed class ApplicationDbContext : IdentityDbContext<ApplicationUser, Ap
 {
     public DbSet<UserBalance> UserBalances { get; set; }
     public DbSet<UserBalanceTransaction> UserBalanceTransactions { get; set; }
+    public DbSet<AIModel> AIModels { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
