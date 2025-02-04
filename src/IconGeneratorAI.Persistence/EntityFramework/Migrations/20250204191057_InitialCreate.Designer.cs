@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250131183622_InitialCreate1")]
-    partial class InitialCreate1
+    [Migration("20250204191057_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,7 +76,87 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                     b.HasKey("Id")
                         .HasName("pk_ai_models");
 
+                    b.HasIndex("Sizes")
+                        .HasDatabaseName("ix_ai_models_sizes");
+
+                    NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("Sizes"), "GIN");
+
                     b.ToTable("ai_models", (string)null);
+                });
+
+            modelBuilder.Entity("IconGeneratorAI.Domain.Entities.IconGeneration", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("AIModelId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ai_model_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedByUserId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<TimeSpan?>("GenerationTime")
+                        .HasColumnType("interval")
+                        .HasColumnName("generation_time");
+
+                    b.Property<string>("ImageUrl")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)")
+                        .HasColumnName("image_url");
+
+                    b.Property<string>("PrimaryColor")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("primary_color");
+
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("prompt");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("size");
+
+                    b.Property<short>("Style")
+                        .HasColumnType("SMALLINT")
+                        .HasColumnName("style");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<string>("UpdatedByUserId")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
+                        .HasName("pk_icon_generations");
+
+                    b.HasIndex("AIModelId")
+                        .HasDatabaseName("ix_icon_generations_ai_model_id");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_icon_generations_user_id");
+
+                    b.ToTable("icon_generations", (string)null);
                 });
 
             modelBuilder.Entity("IconGeneratorAI.Domain.Entities.UserBalance", b =>
@@ -319,10 +399,6 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                         .HasColumnType("character varying(150)")
                         .HasColumnName("updated_by_user_id");
 
-                    b.Property<Guid>("UserBalanceUserId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("user_balance_user_id");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
@@ -341,9 +417,6 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
-
-                    b.HasIndex("UserBalanceUserId")
-                        .HasDatabaseName("ix_application_users_user_balance_user_id");
 
                     b.ToTable("application_users", (string)null);
                 });
@@ -452,11 +525,32 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                     b.ToTable("application_user_tokens", (string)null);
                 });
 
-            modelBuilder.Entity("IconGeneratorAI.Domain.Entities.UserBalance", b =>
+            modelBuilder.Entity("IconGeneratorAI.Domain.Entities.IconGeneration", b =>
                 {
+                    b.HasOne("IconGeneratorAI.Domain.Entities.AIModel", "AIModel")
+                        .WithMany()
+                        .HasForeignKey("AIModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_icon_generations_ai_models_ai_model_id");
+
                     b.HasOne("IconGeneratorAI.Domain.Identity.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_icon_generations_users_user_id");
+
+                    b.Navigation("AIModel");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("IconGeneratorAI.Domain.Entities.UserBalance", b =>
+                {
+                    b.HasOne("IconGeneratorAI.Domain.Identity.ApplicationUser", "User")
+                        .WithOne("UserBalance")
+                        .HasForeignKey("IconGeneratorAI.Domain.Entities.UserBalance", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_user_balances_users_user_id");
@@ -488,13 +582,6 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
 
             modelBuilder.Entity("IconGeneratorAI.Domain.Identity.ApplicationUser", b =>
                 {
-                    b.HasOne("IconGeneratorAI.Domain.Entities.UserBalance", "UserBalance")
-                        .WithMany()
-                        .HasForeignKey("UserBalanceUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("fk_application_users_user_balances_user_balance_user_id");
-
                     b.OwnsOne("IconGeneratorAI.Domain.ValueObjects.FullName", "FullName", b1 =>
                         {
                             b1.Property<Guid>("ApplicationUserId")
@@ -524,8 +611,6 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
 
                     b.Navigation("FullName")
                         .IsRequired();
-
-                    b.Navigation("UserBalance");
                 });
 
             modelBuilder.Entity("IconGeneratorAI.Domain.Identity.ApplicationUserClaim", b =>
@@ -578,6 +663,12 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
             modelBuilder.Entity("IconGeneratorAI.Domain.Entities.UserBalance", b =>
                 {
                     b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("IconGeneratorAI.Domain.Identity.ApplicationUser", b =>
+                {
+                    b.Navigation("UserBalance")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

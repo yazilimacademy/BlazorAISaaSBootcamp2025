@@ -14,9 +14,9 @@ public sealed class UserBalanceConfiguration : IEntityTypeConfiguration<UserBala
 
               // Relationships
               builder.HasOne(x => x.User)
-                     .WithMany()
-                     .HasForeignKey(x => x.UserId)
-                     .IsRequired();
+                     .WithOne(x => x.UserBalance)
+                     .HasForeignKey<UserBalance>(x => x.UserId);
+
 
               // Properties
               builder.Property(x => x.Balance)

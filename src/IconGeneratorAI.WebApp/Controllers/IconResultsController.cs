@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using IconGeneratorAI.Domain.Dtos;
 using IconGeneratorAI.Domain.Entities;
@@ -48,28 +49,53 @@ namespace IconGeneratorAI.WebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync(CreateIconRequestDto requestDto, CancellationToken cancellationToken)
         {
+            // 1. Stopwatch'ı başlat
+            var stopwatch = Stopwatch.StartNew();
+
             using var client = new HttpClient();
             client.BaseAddress = new Uri("http://localhost:3000/");
 
+            // 2. İkon oluşturma isteğini yap
             var response = await client.PostAsJsonAsync($"generate", requestDto, cancellationToken);
+
+            // 3. Stopwatch'ı durdur
+            stopwatch.Stop();
+            var generationTime = stopwatch.Elapsed; // Geçen süreyi al
 
             if (response.IsSuccessStatusCode)
             {
                 var imageBytes = await response.Content.ReadAsByteArrayAsync();
-
                 var memoryStream = new MemoryStream(imageBytes);
-
-                var uploadRequestDto = new ObjectStorageUploadRequestDto(memoryStream, "image/webp", "icon-result.webp");
+                var uploadRequestDto = new ObjectStorageUploadRequestDto(memoryStream, "image/webp", "icon-generation.webp"); // Dosya adını güncelledim
 
                 var imageUrl = await _objectStorageService.UploadAsync(uploadRequestDto, cancellationToken);
 
-                var iconResult = IconResult.Create(requestDto.Prompt, requestDto.Size, imageUrl);
+                // **ÖNEMLİ: IconGeneration entity'sini oluştur ve veritabanına kaydet**
+                // var iconGeneration = new IconGeneration() // IconGeneration entity'sini new ile oluşturuyoruz
+                // {
+                //     AIModelId = requestDto.AIModelId, // RequestDto'dan veya nereden geliyorsa AIModelId'yi al
+                //     Prompt = requestDto.Prompt,
+                //     Style = requestDto.Style, // RequestDto'dan veya nereden geliyorsa Style'ı al
+                //     Size = requestDto.Size,
+                //     ImageUrl = imageUrl,
+                //     UserId = Guid.NewGuid(), // Örnek olarak Guid.NewGuid() atadım, gerçek uygulamada kullanıcı bilgisini almalısınız
+                //     PrimaryColor = requestDto.PrimaryColor, // RequestDto'dan veya nereden geliyorsa PrimaryColor'ı al
+                //     GenerationTime = generationTime // Hesapladığımız GenerationTime'ı entity'ye ekle
+                // };
 
-                return Ok(iconResult);
+                // _dbContext.IconGenerations.Add(iconGeneration); // Entity'yi DbContext'e ekle
+                // await _dbContext.SaveChangesAsync(cancellationToken); // Değişiklikleri veritabanına kaydet
+
+                // Oluşturulan IconGeneration entity'sini döndür
+                // return Ok(iconGeneration); // Başarılı sonuç olarak IconGeneration entity'sini döndürüyoruz
+                return Ok();
 
             }
             else
             {
+                // Hata durumunda da GenerationTime'ı loglayabilir veya işleyebilirsiniz.
+                Console.WriteLine($"İkon oluşturma başarısız oldu. Status Code: {response.StatusCode}, Generation Time: {generationTime}");
+
                 if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
                 {
                     return NotFound("Not found");
@@ -83,7 +109,6 @@ namespace IconGeneratorAI.WebApp.Controllers
                     Console.WriteLine("Something went wrong");
                     return StatusCode(500, "Something went wrong");
                 }
-
             }
         }
 

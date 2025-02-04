@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate1 : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -46,6 +46,37 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "application_users",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    created_by_user_id = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    updated_by_user_id = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    user_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    normalized_user_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    normalized_email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    email_confirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    password_hash = table.Column<string>(type: "text", nullable: true),
+                    security_stamp = table.Column<string>(type: "text", nullable: true),
+                    concurrency_stamp = table.Column<string>(type: "text", nullable: true),
+                    phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
+                    phone_number_confirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    two_factor_enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    lockout_end = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    lockout_enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    access_failed_count = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_application_users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "application_role_claims",
                 columns: table => new
                 {
@@ -79,6 +110,12 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_application_user_claims", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_application_user_claims_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "application_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -93,6 +130,12 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_application_user_logins", x => new { x.login_provider, x.provider_key });
+                    table.ForeignKey(
+                        name: "fk_application_user_logins_application_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "application_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -111,6 +154,12 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                         principalTable: "application_roles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_application_user_roles_application_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "application_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -125,38 +174,47 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_application_user_tokens", x => new { x.user_id, x.login_provider, x.name });
+                    table.ForeignKey(
+                        name: "fk_application_user_tokens_application_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "application_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "application_users",
+                name: "icon_generations",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    first_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    last_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    user_balance_user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ai_model_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    style = table.Column<short>(type: "SMALLINT", nullable: false),
+                    prompt = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    size = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
+                    image_url = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    primary_color = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
+                    generation_time = table.Column<TimeSpan>(type: "interval", nullable: true),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    created_by_user_id = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
+                    created_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    updated_by_user_id = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    user_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    normalized_user_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
-                    normalized_email = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: true),
-                    email_confirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    password_hash = table.Column<string>(type: "text", nullable: true),
-                    security_stamp = table.Column<string>(type: "text", nullable: true),
-                    concurrency_stamp = table.Column<string>(type: "text", nullable: true),
-                    phone_number = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: true),
-                    phone_number_confirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    two_factor_enabled = table.Column<bool>(type: "boolean", nullable: false),
-                    lockout_end = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    lockout_enabled = table.Column<bool>(type: "boolean", nullable: false),
-                    access_failed_count = table.Column<int>(type: "integer", nullable: false)
+                    updated_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_application_users", x => x.id);
+                    table.PrimaryKey("pk_icon_generations", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_icon_generations_ai_models_ai_model_id",
+                        column: x => x.ai_model_id,
+                        principalTable: "ai_models",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_icon_generations_users_user_id",
+                        column: x => x.user_id,
+                        principalTable: "application_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -209,6 +267,12 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "ix_ai_models_sizes",
+                table: "ai_models",
+                column: "sizes")
+                .Annotation("Npgsql:IndexMethod", "GIN");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_application_role_claims_role_id",
                 table: "application_role_claims",
                 column: "role_id");
@@ -246,72 +310,30 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "ix_application_users_user_balance_user_id",
-                table: "application_users",
-                column: "user_balance_user_id");
-
-            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "application_users",
                 column: "normalized_user_name",
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "ix_icon_generations_ai_model_id",
+                table: "icon_generations",
+                column: "ai_model_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_icon_generations_user_id",
+                table: "icon_generations",
+                column: "user_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_user_balance_transactions_user_balance_id",
                 table: "user_balance_transactions",
                 column: "user_balance_id");
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_application_user_claims_users_user_id",
-                table: "application_user_claims",
-                column: "user_id",
-                principalTable: "application_users",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_application_user_logins_application_users_user_id",
-                table: "application_user_logins",
-                column: "user_id",
-                principalTable: "application_users",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_application_user_roles_application_users_user_id",
-                table: "application_user_roles",
-                column: "user_id",
-                principalTable: "application_users",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_application_user_tokens_application_users_user_id",
-                table: "application_user_tokens",
-                column: "user_id",
-                principalTable: "application_users",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "fk_application_users_user_balances_user_balance_user_id",
-                table: "application_users",
-                column: "user_balance_user_id",
-                principalTable: "user_balances",
-                principalColumn: "user_id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "fk_user_balances_users_user_id",
-                table: "user_balances");
-
-            migrationBuilder.DropTable(
-                name: "ai_models");
-
             migrationBuilder.DropTable(
                 name: "application_role_claims");
 
@@ -328,16 +350,22 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 name: "application_user_tokens");
 
             migrationBuilder.DropTable(
+                name: "icon_generations");
+
+            migrationBuilder.DropTable(
                 name: "user_balance_transactions");
 
             migrationBuilder.DropTable(
                 name: "application_roles");
 
             migrationBuilder.DropTable(
-                name: "application_users");
+                name: "ai_models");
 
             migrationBuilder.DropTable(
                 name: "user_balances");
+
+            migrationBuilder.DropTable(
+                name: "application_users");
         }
     }
 }
