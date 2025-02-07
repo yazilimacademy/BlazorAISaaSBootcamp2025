@@ -6,6 +6,8 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 @using IconGeneratorAI.Domain.Identity
+@using IconGeneratorAI.Domain.ValueObjects
+@using Microsoft.FluentUI.AspNetCore.Components
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -14,42 +16,49 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IToastService ToastService
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
-
-<div class="row">
-    <div class="col-lg-6">
-        <StatusMessage Message="@Message" />
-        <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
-            <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
-            <hr />
-            <ValidationSummary class="text-danger" role="alert" />
-            <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" id="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label for="Input.Email">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="Input.Password">Password</label>
-                <ValidationMessage For="() => Input.Password" class="text-danger" />
-            </div>
-            <div class="form-floating mb-3">
-                <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label for="Input.ConfirmPassword">Confirm Password</label>
-                <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
-            </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </EditForm>
-    </div>
-    <div class="col-lg-4 col-lg-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
+<div class="flex items-center justify-center min-h-screen bg-base-100">
+    <div class="w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-white text-center">Register</h1>
+        <section class="bg-base-200 p-6 rounded-lg shadow-lg">
+            <StatusMessage Message="@Message" />
+            <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
+                <DataAnnotationsValidator />
+                <h2 class="text-xl font-semibold mb-4 text-white">Create a new account.</h2>
+                <hr class="mb-4 border-base-300" />
+                <ValidationSummary class="text-error" role="alert" />
+                <div class="mb-4">
+                    <label for="Input.FirstName" class="label text-white block mb-2">First Name</label>
+                    <InputText @bind-Value="Input.FirstName" id="Input.FirstName" class="input input-bordered w-full bg-base-300 text-white" autocomplete="given-name" aria-required="true" placeholder="First Name" />
+                    <ValidationMessage For="() => Input.FirstName" class="text-error" />
+                </div>
+                <div class="mb-4">
+                    <label for="Input.LastName" class="label text-white block mb-2">Last Name</label>
+                    <InputText @bind-Value="Input.LastName" id="Input.LastName" class="input input-bordered w-full bg-base-300 text-white" autocomplete="family-name" aria-required="true" placeholder="Last Name" />
+                    <ValidationMessage For="() => Input.LastName" class="text-error" />
+                </div>
+                <div class="mb-4">
+                    <label for="Input.Email" class="label text-white block mb-2">Email</label>
+                    <InputText @bind-Value="Input.Email" id="Input.Email" class="input input-bordered w-full bg-base-300 text-white" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <ValidationMessage For="() => Input.Email" class="text-error" />
+                </div>
+                <div class="mb-4">
+                    <label for="Input.Password" class="label text-white block mb-2">Password</label>
+                    <InputText type="password" @bind-Value="Input.Password" id="Input.Password" class="input input-bordered w-full bg-base-300 text-white" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <ValidationMessage For="() => Input.Password" class="text-error" />
+                </div>
+                <div class="mb-4">
+                    <label for="Input.ConfirmPassword" class="label text-white block mb-2">Confirm Password</label>
+                    <InputText type="password" @bind-Value="Input.ConfirmPassword" id="Input.ConfirmPassword" class="input input-bordered w-full bg-base-300 text-white" autocomplete="new-password" aria-required="true" placeholder="confirm password" />
+                    <ValidationMessage For="() => Input.ConfirmPassword" class="text-error" />
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary w-full">Register</button>
+                </div>
+            </EditForm>
         </section>
     </div>
 </div>
@@ -68,6 +77,7 @@
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
+        user.FullName = FullName.Create(Input.FirstName, Input.LastName);
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -100,7 +110,9 @@
 
         await SignInManager.SignInAsync(user, isPersistent: false);
         RedirectManager.RedirectTo(ReturnUrl);
+        ToastService.ShowSuccess("Welcome aboard!");
     }
+
 
     private ApplicationUser CreateUser()
     {
@@ -126,6 +138,14 @@
 
     private sealed class InputModel
     {
+        [Required]
+        [Display(Name = "First Name")]
+        public string FirstName { get; set; } = "";
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string LastName { get; set; } = "";
+
         [Required]
         [EmailAddress]
         [Display(Name = "Email")]

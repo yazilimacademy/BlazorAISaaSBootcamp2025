@@ -8,12 +8,19 @@
                 </svg>
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                <li>
-                    <NavLink class="nav-link text-lg" href="/create-icon">Generate</NavLink>
-                </li>
+                <AuthorizeView>
+                    <Authorized>
+                        <li>
+                            <NavLink class="nav-link text-lg" href="/create-icon">Generate</NavLink>
+                        </li>
+                    </Authorized>
+                    <NotAuthorized />
+                </AuthorizeView>
+
                 <li>
                     <NavLink class="nav-link text-lg" href="/community">Community</NavLink>
                 </li>
+
 
                 <li>
                     <NavLink class="nav-link text-lg" href="/about">About</NavLink>
@@ -24,18 +31,34 @@
     </div>
     <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-            <li>
-                <NavLink class="nav-link text-lg" href="/create-icon">Generate</NavLink>
-            </li>
+            <AuthorizeView>
+                <Authorized>
+                    <li>
+                        <NavLink class="nav-link text-lg" href="/create-icon">Generate</NavLink>
+                    </li>
+                </Authorized>
+                <NotAuthorized />
+            </AuthorizeView>
+
             <li>
                 <NavLink class="nav-link text-lg" href="/community">Community</NavLink>
             </li>
+
             <li>
                 <NavLink class="nav-link text-lg" href="/about">About</NavLink>
             </li>
         </ul>
     </div>
     <div class="navbar-end">
-        <NavLink class="btn btn-outline btn-secondary" href="/login">Login</NavLink>
+
+        <AuthorizeView>
+            <Authorized>
+                <NavLink class="btn btn-outline btn-secondary" href="/Account/Logout">Logout</NavLink>
+            </Authorized>
+            <NotAuthorized>
+                <NavLink class="btn btn-outline btn-secondary" href="/Account/Login">Login</NavLink>
+            </NotAuthorized>
+        </AuthorizeView>
+
     </div>
 </div>

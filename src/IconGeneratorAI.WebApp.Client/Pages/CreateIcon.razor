@@ -2,7 +2,12 @@
 @using System.ComponentModel.DataAnnotations
 @using IconGeneratorAI.Domain.Dtos
 @using IconGeneratorAI.Domain.Entities
+@using IconGeneratorAI.Domain.Enums
+@using IconGeneratorAI.Shared.Models
+@using Microsoft.AspNetCore.Authorization
 @inject HttpClient Http
+
+@attribute [Authorize]
 
 @rendermode InteractiveWebAssembly
 
@@ -12,85 +17,134 @@
             <div class="card-body">
                 <h2 class="card-title text-2xl font-bold text-center mb-6">Generate Your Dream Icon</h2>
 
-                <EditForm Model="@formModel" OnValidSubmit="HandleValidSubmit" FormName="createIconForm">
-                    <div class="form-control w-full mb-4">
-                        <label class="label">
-                            <span class="label-text font-medium">Prompt</span>
-                            <span class="label-text-alt text-base-content/70">Be descriptive for better results</span>
-                        </label>
-                        <div class="relative">
-                            <InputTextArea id="prompt"
-                                class="textarea textarea-bordered min-h-[120px] text-base leading-relaxed focus:textarea-primary w-full bg-base-100"
-                                placeholder="Describe your dream icon in detail. For example: A minimalist logo of a mountain peak at sunset, with geometric shapes, using pastel colors..."
-                                @bind-Value="formModel.Prompt" />
-                            <div class="absolute bottom-3 right-3">
-                                <button @onclick="HandleMagicClick" type="button"
-                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-base-200/50 transition-all duration-300 hover:scale-110 hover:rotate-12 group"
-                                    disabled="@isMagicLoading">
-                                    @if (isMagicLoading)
-                                    {
-                                        <span class="loading loading-spinner loading-sm"></span>
-                                    }
-                                    else
-                                    {
-                                        <img src="/icons/magic-stick-3-svgrepo-com.svg" alt="Magic Wand"
-                                            class="w-5 h-5 [&>path]:fill-yellow-400 yellow-400 relative group-hover:animate-pulse"
-                                            title="Get AI suggestions" />
-                                    }
-                                    <div class="absolute inset-0 -z-10 animate-pulse group-hover:animate-none">
-                                        <div
-                                            class="absolute inset-0 rounded-lg bg-yellow-400/20 blur-sm group-hover:blur-md transition-all">
+                @if (aiModels is null)
+                {
+                    <div class="flex flex-col items-center mt-8">
+                        <span class="loading loading-spinner loading-lg text-primary"></span>
+                        <p class="mt-4 text-base-content/70">Loading AI models...</p>
+                    </div>
+                }
+                else
+                {
+                    <EditForm Model="@formModel" OnValidSubmit="HandleValidSubmit" FormName="createIconForm">
+                        <div class="form-control w-full mb-4">
+                            <label class="label">
+                                <span class="label-text font-medium">Prompt</span>
+                                <span class="label-text-alt text-base-content/70">Be descriptive for better results</span>
+                            </label>
+                            <div class="relative">
+                                <InputTextArea id="prompt"
+                                    class="textarea textarea-bordered min-h-[120px] text-base leading-relaxed focus:textarea-primary w-full bg-base-100"
+                                    placeholder="Describe your dream icon in detail. For example: A minimalist logo of a mountain peak at sunset, with geometric shapes, using pastel colors..."
+                                    @bind-Value="formModel.Prompt" />
+                                <div class="absolute bottom-3 right-3">
+                                    <button @onclick="HandleMagicClick" type="button"
+                                        class="inline-flex items-center justify-center w-8 h-8 rounded-lg hover:bg-base-200/50 transition-all duration-300 hover:scale-110 hover:rotate-12 group"
+                                        disabled="@isMagicLoading">
+                                        @if (isMagicLoading)
+                                        {
+                                            <span class="loading loading-spinner loading-sm"></span>
+                                        }
+                                        else
+                                        {
+                                            <img src="/icons/magic-stick-3-svgrepo-com.svg" alt="Magic Wand"
+                                                class="w-5 h-5 [&>path]:fill-yellow-400 yellow-400 relative group-hover:animate-pulse"
+                                                title="Get AI suggestions" />
+                                        }
+                                        <div class="absolute inset-0 -z-10 animate-pulse group-hover:animate-none">
+                                            <div
+                                                class="absolute inset-0 rounded-lg bg-yellow-400/20 blur-sm group-hover:blur-md transition-all">
+                                            </div>
                                         </div>
-                                    </div>
-                                </button>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <label class="label">
-                            <span class="label-text-alt text-base-content/70">
-                                <span class="@(formModel.Prompt?.Length > 450 ? "text-error" : "")">
-                                    @(formModel.Prompt?.Length ?? 0)/500
+                            <label class="label">
+                                <span class="label-text-alt text-base-content/70">
+                                    <span class="@(formModel.Prompt?.Length > 450 ? "text-error" : "")">
+                                        @(formModel.Prompt?.Length ?? 0)/500
+                                    </span>
                                 </span>
-                            </span>
-                        </label>
-                        <ValidationMessage For="@(() => formModel.Prompt)" class="text-error text-sm mt-1" />
-                    </div>
+                            </label>
+                            <ValidationMessage For="@(() => formModel.Prompt)" class="text-error text-sm mt-1" />
+                        </div>
 
-                    <div class="form-control w-full mb-6">
-                        <label class="label">
-                            <span class="label-text font-medium">Size</span>
-                        </label>
-                        <InputSelect id="size" class="select select-bordered select-lg w-full"
-                            @bind-Value="formModel.Size">
-                            <option value="">Select size...</option>
-                            @foreach (var size in sizes)
+                        <div class="form-control w-full mb-6">
+                            <label class="label">
+                                <span class="label-text font-medium">Model</span>
+                            </label>
+                            <InputSelect id="model" class="select select-bordered select-lg w-full"
+                                 TValue="Guid" ValueChanged="HandleModelChange" ValueExpression="@(() => formModel.AIModelId)">
+
+                                <option value="" selected>Select model...</option>
+                                @foreach (var model in aiModels)
+                                {
+                                    <option value="@model.Id">@model.Name</option>
+                                }
+
+                            </InputSelect>
+                            <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
+                        </div>
+
+
+                        <div class="form-control w-full mb-6">
+                            <label class="label">
+                                <span class="label-text font-medium">Style</span>
+                            </label>
+                            <InputSelect id="style" class="select select-bordered select-lg w-full"
+                                @bind-Value="formModel.Style">
+
+                                <option value="">Select style...</option>
+                                @foreach (var style in Enum.GetValues<IconStyle>())
+                                {
+                                    <option value="@style">@style.ToString()</option>
+                                }
+
+                            </InputSelect>
+                            <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
+                        </div>
+
+                        @if (selectedAIModel is not null)
+                        {
+                            <div class="form-control w-full mb-6">
+                                <label class="label">
+                                    <span class="label-text font-medium">Size</span>
+                                </label>
+                                <InputSelect id="size" class="select select-bordered select-lg w-full"
+                                    @bind-Value="formModel.Size">
+                                    <option value="">Select size...</option>
+                                    @foreach (var size in selectedAIModel.Sizes)
+                                    {
+                                        <option value="@size">@size</option>
+                                    }
+
+                                </InputSelect>
+                                <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
+                            </div>
+                        }
+
+                        <div class="card-actions">
+                            @if (isLoading)
                             {
-                                <option value="@size">@size</option>
+                                <button class="btn btn-primary btn-lg w-full" disabled>
+                                    <span class="loading loading-spinner"></span>
+                                    Generating...
+                                </button>
                             }
-                        </InputSelect>
-                        <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
-                    </div>
-
-                    <div class="card-actions">
-                        @if (isLoading)
-                        {
-                            <button class="btn btn-primary btn-lg w-full" disabled>
-                                <span class="loading loading-spinner"></span>
-                                Generating...
-                            </button>
-                        }
-                        else
-                        {
-                            <button type="submit" class="btn btn-primary btn-lg w-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                                </svg>
-                                Generate Icon
-                            </button>
-                        }
-                    </div>
-                </EditForm>
+                            else
+                            {
+                                <button type="submit" class="btn btn-primary btn-lg w-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                    </svg>
+                                    Generate Icon
+                                </button>
+                            }
+                        </div>
+                    </EditForm>
+                }
 
                 @if (isLoading)
                 {
@@ -118,9 +172,31 @@
     private bool isLoading = false;
     private bool isMagicLoading = false;
     private IconResult iconResult = null;
+    private List<GetAllAIModelsDto> aiModels = null;
+    private GetAllAIModelsDto selectedAIModel = null;
 
+    protected override async Task OnInitializedAsync()
+    {
+        aiModels = await Http.GetFromJsonAsync<List<GetAllAIModelsDto>>("/api/ai-models");
+
+        await base.OnInitializedAsync();
+    }
+
+    private void HandleModelChange(Guid args)
+    {
+        if (args == Guid.Empty)
+            return;
+
+        var id = args;
+
+        selectedAIModel = aiModels.FirstOrDefault(x => x.Id == id);
+
+        formModel.AIModelId = id;
+    }
 
     private async Task HandleValidSubmit()
+
+
     {
         try
         {
@@ -178,10 +254,21 @@
 
     internal class FormModel
     {
+        [Required]
+        public Guid AIModelId { get; set; }
+        [Required]
+        public IconStyle Style { get; set; }
+
         [Required, MinLength(3), MaxLength(500)]
         public string Prompt { get; set; }
         [Required]
         public string Size { get; set; }
+
+
+        public FormModel()
+        {
+            Style = Enum.GetValues<IconStyle>().First();
+        }
     }
 
     internal class SizeModel

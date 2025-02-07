@@ -1,0 +1,20 @@
+﻿@page "/Account/Logout"
+
+@using Microsoft.AspNetCore.Identity
+@using IconGeneratorAI.Domain.Identity
+@using Microsoft.FluentUI.AspNetCore.Components
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+@inject IToastService ToastService
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await SignInManager.SignOutAsync();
+
+        Navigation.NavigateTo("/Account/Login");
+
+        ToastService.ShowSuccess("Logged out successfully!");
+    }
+}

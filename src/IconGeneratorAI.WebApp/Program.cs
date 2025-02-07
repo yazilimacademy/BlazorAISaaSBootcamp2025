@@ -8,6 +8,7 @@ using IconGeneratorAI.Domain.Identity;
 using IconGeneratorAI.Persistence;
 using IconGeneratorAI.Domain.Settings;
 using IconGeneratorAI.WebApp.Services;
+using Microsoft.FluentUI.AspNetCore.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,13 +43,15 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:3000/") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5118/") });
 
 builder.Services.Configure<AzureBlobStorageSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
 builder.Services.AddScoped<IObjectStorageService, AzureBlobStorageManager>();
 
 //builder.Services.AddScoped<IObjectStorageService, AWSS3Manager>();
+
+builder.Services.AddFluentUIComponents();
 
 var app = builder.Build();
 

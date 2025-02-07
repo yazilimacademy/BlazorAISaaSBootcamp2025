@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+h1:focus {
+    outline: none;
+    box-shadow: none;
+}
 
 .valid.modified:not([type=checkbox]) {
     outline: 1px solid #26b050;

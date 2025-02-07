@@ -1,5 +1,7 @@
 ﻿@page "/counter"
 @rendermode InteractiveAuto
+@using Microsoft.FluentUI.AspNetCore.Components
+@inject IToastService ToastService
 
 <PageTitle>Counter</PageTitle>
 
@@ -15,5 +17,7 @@
     private void IncrementCount()
     {
         currentCount++;
+        ToastService.ShowSuccess("Counter incremented!");
     }
+
 }

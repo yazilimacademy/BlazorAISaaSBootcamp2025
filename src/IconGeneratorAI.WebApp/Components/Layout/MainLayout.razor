@@ -1,10 +1,14 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.FluentUI.AspNetCore.Components
+@inherits LayoutComponentBase
 
 <Navbar />
 
 <div>
     @Body
+
+    <FluentToastProvider @rendermode="InteractiveServer" Position="ToastPosition.TopRight" />
 </div>
+
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.

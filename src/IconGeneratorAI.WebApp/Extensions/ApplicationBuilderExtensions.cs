@@ -51,14 +51,40 @@ public static class ApplicationBuilderExtensions
                                 throw new Exception($"Failed to create default user: {errors}");
                         }
 
-                        await Task.Delay(3000);
-
                         var userBalance = UserBalance.Create(userId, 100);
 
                         await dbContext.UserBalances.AddAsync(userBalance, cts.Token);
                         await dbContext.SaveChangesAsync(cts.Token);
 
                         transactionScope.Complete();
+                }
+
+                var user = await userManager
+                .FindByEmailAsync("alper.hoca@example.com") ?? throw new Exception("User not found");
+
+                // Seed AIModel if no models exist
+                if (!await dbContext.AIModels.AnyAsync(cts.Token))
+                {
+                        var recraftModel = new AIModel
+                        {
+                                Id = Guid.CreateVersion7(), // Set the Id using Guid.CreateVersion7()
+                                Name = "Recraft",
+                                Description = "Recraft V3 (recraft-v3) is a text-to-image model with the ability to generate long texts, and images in a wide list of styles. As of today, it is SOTA in image generation, proven by the Text-to-Image Benchmark by Artificial Analysis.",
+                                ModelUrl = "recraft-ai/recraft-v3",
+                                Sizes = [
+                                        "1365x1024", "1024x1024", "1365x1024", "1024x1365", "1536x1024",
+                        "1024x1536", "1820x1024", "1024x1820", "1024x2048", "2048x1024",
+                        "1434x1024", "1024x1434", "1024x1280", "1280x1024", "1024x1707",
+                        "1707x1024"
+                        ],
+                                CreatedAt = DateTimeOffset.UtcNow,
+                                CreatedByUserId = user.Id.ToString(),
+                        };
+
+
+
+                        await dbContext.AIModels.AddAsync(recraftModel, cts.Token);
+                        await dbContext.SaveChangesAsync(cts.Token);
                 }
 
 

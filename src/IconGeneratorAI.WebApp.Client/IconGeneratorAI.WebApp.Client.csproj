@@ -11,10 +11,12 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="9.0.0" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\IconGeneratorAI.Domain\IconGeneratorAI.Domain.csproj" />
+    <ProjectReference Include="..\IconGeneratorAI.Shared\IconGeneratorAI.Shared.csproj" />
   </ItemGroup>
 
 </Project>

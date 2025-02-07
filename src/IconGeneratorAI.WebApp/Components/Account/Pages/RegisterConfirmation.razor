@@ -12,22 +12,30 @@
 
 <PageTitle>Register confirmation</PageTitle>
 
-<h1>Register confirmation</h1>
+<div class="flex items-center justify-center min-h-screen bg-base-100">
+    <div class="card w-full max-w-md bg-base-200 shadow-lg">
+        <div class="card-body text-center">
+            <h1 class="text-2xl font-bold mb-4 text-white">Register confirmation</h1>
+            <StatusMessage Message="@statusMessage" />
 
-<StatusMessage Message="@statusMessage" />
-
-@if (emailConfirmationLink is not null)
-{
-    <p>
-        This app does not currently have a real email sender registered, see <a href="https://aka.ms/aspaccountconf">these
-            docs</a> for how to configure a real email sender.
-        Normally this would be emailed: <a href="@emailConfirmationLink">Click here to confirm your account</a>
-    </p>
-}
-else
-{
-    <p role="alert">Please check your email to confirm your account.</p>
-}
+            @if (emailConfirmationLink is not null)
+            {
+                <p class="text-white mb-4">
+                    This app does not currently have a real email sender registered, see
+                    <a href="https://aka.ms/aspaccountconf" class="link link-hover">these docs</a>
+                    for how to configure a real email sender. Normally this would be emailed:
+                    <span class="badge badge-primary badge-lg">
+                        <a href="@emailConfirmationLink" class="link link-hover">Click here to confirm your account</a>
+                    </span>
+                </p>
+            }
+            else
+            {
+                <p role="alert" class="text-error">Please check your email to confirm your account.</p>
+            }
+        </div>
+    </div>
+</div>
 
 @code {
     private string? emailConfirmationLink;

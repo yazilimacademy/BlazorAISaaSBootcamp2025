@@ -15,9 +15,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.3" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.33.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.33.0-alpha" />
     <ProjectReference Include="..\IconGeneratorAI.Persistence\IconGeneratorAI.Persistence.csproj" />
+    <ProjectReference Include="..\IconGeneratorAI.Shared\IconGeneratorAI.Shared.csproj" />
     <ProjectReference Include="..\IconGeneratorAI.WebApp.Client\IconGeneratorAI.WebApp.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="9.0.1" />
