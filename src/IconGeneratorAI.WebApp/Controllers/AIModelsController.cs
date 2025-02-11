@@ -23,7 +23,7 @@ namespace IconGeneratorAI.WebApp.Controllers
             var aiModels = await _context
             .AIModels
             .AsNoTracking()
-            .Select(x => new GetAllAIModelsDto(x.Id, x.Name, x.Sizes))
+            .Select(x => new GetAllAIModelsDto(x.Id, x.Name, x.Description, x.ModelUrl, x.Parameters.Select(p => p.Name).ToList()))
             .ToListAsync(cancellationToken);
 
             return Ok(aiModels);

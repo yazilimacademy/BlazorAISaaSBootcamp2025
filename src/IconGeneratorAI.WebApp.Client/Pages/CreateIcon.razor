@@ -113,9 +113,9 @@
                                 <InputSelect id="size" class="select select-bordered select-lg w-full"
                                     @bind-Value="formModel.Size">
                                     <option value="">Select size...</option>
-                                    @foreach (var size in selectedAIModel.Sizes)
+                                    @foreach (var parameter in selectedAIModel.Parameters)
                                     {
-                                        <option value="@size">@size</option>
+                                        <option value="@parameter">@parameter</option>
                                     }
 
                                 </InputSelect>
@@ -174,6 +174,80 @@
     private IconResult iconResult = null;
     private List<GetAllAIModelsDto> aiModels = null;
     private GetAllAIModelsDto selectedAIModel = null;
+
+    private List<AIModelParameter> modelParameters = new(){
+        new AIModelParameter{
+            Name = "size",
+            DisplayName = "Size",
+            Type = AIModelParameterType.String,
+            IsRequired = true,
+            DefaultValue = "1024x1024",
+            PossibleValues = ["1365x1024",
+"1024x1024",
+"1365x1024",
+"1024x1365",
+"1536x1024",
+"1024x1536",
+"1920x1024",
+"1024x1920",
+"1024x2048",
+"2048x1024",
+"1434x1024",
+"1024x1434",
+"1024x1280",
+"1280x1024",
+"1024x1707",
+"1707x1024",]
+        },
+        new AIModelParameter{
+            Name = "style",
+            DisplayName = "Style",
+            Type = AIModelParameterType.String,
+            IsRequired = true,
+            DefaultValue = "any",
+            PossibleValues = [
+                "any",
+                "realistic_image",
+                "digital_illustration",
+                "digital_illustration/pixel_art",
+                "digital_illustration/hand_drawn",
+                "digital_illustration/grain",
+                "digital_illustration/infantile_sketch",
+                "digital_illustration/2d_art_poster",
+                "digital_illustration/handmade_3d",
+                "digital_illustration/hand_drawn_outline",
+                "digital_illustration/engraving_color",
+                "digital_illustration/2d_art_poster_2",
+                "realistic_image/b_and_w",
+                "realistic_image/hard_flash",
+                "realistic_image/hdr",
+                "realistic_image/natural_light",
+                "realistic_image/studio_portrait",
+                "realistic_image/enterprise",
+                "realistic_image/motion_blur"
+            ]
+        },
+        new AIModelParameter{
+            Name = "aspect_ratio",
+            DisplayName = "Aspect Ratio",
+            Type = AIModelParameterType.String,
+            IsRequired = true,
+            DefaultValue = "1:1",
+            PossibleValues = [
+                "1:1",
+                "16:9",
+                "21:9",
+                "3:2",
+                "2:3",
+                "4:5",
+                "5:4",
+                "3:4",
+                "4:3",
+                "9:16",
+                "9:21"
+            ]
+        }
+        };
 
     protected override async Task OnInitializedAsync()
     {
