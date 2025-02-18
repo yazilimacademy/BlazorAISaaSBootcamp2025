@@ -15,8 +15,6 @@
 <PageTitle>Log in</PageTitle>
 
 <div class="flex items-center justify-center min-h-screen bg-base-100">
-
-
     <div class="w-full max-w-md">
         <h1 class="text-2xl font-bold mb-4 text-white text-center">Log in</h1>
         <section class="bg-base-200 p-6 rounded-lg shadow-lg">
@@ -62,6 +60,11 @@
                     </p>
                 </div>
             </EditForm>
+            <div class="divider">OR</div>
+            <button class="btn btn-outline w-full flex items-center justify-center gap-2" @onclick="SignInWithGoogle">
+                <img src="/icons/google-color.svg" alt="Google" class="w-4 h-4">
+                Sign in with Google
+            </button>
         </section>
     </div>
 </div>
@@ -115,7 +118,13 @@
             errorMessage = "Error: Invalid login attempt.";
             ToastService.ShowError("Error: Invalid login attempt.");
         }
+    }
 
+    private async Task SignInWithGoogle()
+    {
+        // Redirect to Google's OAuth 2.0 server.
+        var properties = SignInManager.ConfigureExternalAuthenticationProperties("Google", ReturnUrl);
+        await HttpContext.ChallengeAsync("Google", properties);
     }
 
     private sealed class InputModel

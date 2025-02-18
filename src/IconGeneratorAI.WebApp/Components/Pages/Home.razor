@@ -6,156 +6,284 @@
 @using IconGeneratorAI.Persistence.EntityFramework.Extensions
 @using System.Text.Json
 
-<PageTitle>Icon Generator AI | THE BEST ICON GENERATOR</PageTitle>
-
-<div class="bg-base-300">
-    <div class="container mx-auto flex flex-col items-center py-12 sm:py-24">
-        <div class="w-11/12 sm:w-2/3 lg:flex justify-center items-center flex-col  mb-5 sm:mb-10">
-            <h1
-                class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-center text-base-content font-black leading-7 md:leading-10">
-                Hayal Ettiğiniz İkonları
-                <span class="text-primary">Yapay Zeka</span>
-                ile Oluşturun
-            </h1>
-            <p class="mt-5 sm:mt-10 lg:w-10/12 text-base-content/70 font-normal text-center text-sm sm:text-lg">
-                Projeleriniz için benzersiz ve profesyonel ikonlar oluşturun. Yapay zeka teknolojimiz ile saniyeler
-                içinde
-                hayalinizdeki ikonu gerçeğe dönüştürün.
-            </p>
-        </div>
-        <div class="flex justify-center items-center">
-            <a href="/create-icon"
-                class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-indigo-700 transition duration-150 ease-in-out hover:bg-indigo-600 lg:text-xl lg:font-bold rounded text-white px-4 sm:px-10 border border-indigo-700 py-2 sm:py-4 text-sm">
-                @if (isAuthenticated)
-                {
-                    <span>İkon Oluştur</span>
-                }
-                else
-                {
-                    <span>Aramıza Katıl</span>
-                }
-
-
-            </a>
-            <button
-                class="ml-4 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 bg-transparent transition duration-150 ease-in-out hover:border-indigo-600 lg:text-xl lg:font-bold hover:text-indigo-600 rounded border border-indigo-700 text-indigo-700 px-4 sm:px-10 py-2 sm:py-4 text-sm">
-                Topluluk İkonları</button>
+<PageTitle>Icon Generator AI | Your Icon, Your 100M Brand</PageTitle>
+<!-- Hero Section: Bold Pattern Interrupt -->
+<!-- Hero Section: Bold Pattern Interrupt -->
+<div
+    class="bg-gradient-to-br from-neutral to-base-300 min-h-screen flex items-center justify-center py-8 relative overflow-hidden">
+    <div class="container mx-auto text-center px-4 relative z-10">
+        <h1 class="text-5xl md:text-6xl font-extrabold text-primary leading-tight animate-fade-in-down">
+            Your App Icon Could Be Worth Millions—Don’t Settle For Less
+        </h1>
+        <p class="mt-6 text-xl text-neutral-content/80 max-w-2xl mx-auto">
+            Launch your dream app with an icon that screams “100M Brand.” Transform your look in minutes—no design
+            skills, no stress.
+        </p>
+        <div class="mt-8 flex justify-center gap-4">
+            <NavLink href="/create-icon"
+                class="btn btn-primary btn-lg shadow-lg hover:scale-105 transition-transform duration-200">
+                See It in Action
+            </NavLink>
+            <NavLink href="/create-icon"
+                class="btn btn-outline btn-lg text-primary hover:bg-primary hover:text-white transition-all duration-200">
+                Get Started Now
+            </NavLink>
         </div>
     </div>
+    <img src="/icons/star-struck.svg" alt="Icon 1" class="absolute top-5 left-5 w-24 h-24 z-0 animate-float">
+    <img src="/icons/star-struck.svg" alt="Icon 3" class="absolute bottom-20 right-32 w-32 h-32 z-0 animate-float">
+    <img src="/icons/star-struck.svg" alt="Icon 4"
+        class="absolute top-60 left-40 w-20 h-20 z-0 animate-float delay-3000">
+    <img src="/icons/star-struck.svg" alt="Icon 5"
+        class="absolute bottom-40 right-10 w-24 h-24 z-0 animate-float delay-4000">
+    <img src="/icons/star-struck.svg" alt="Icon 6"
+        class="absolute top-80 right-20 w-28 h-28 z-0 animate-float delay-5000">
+    <img src="/icons/star-struck.svg" alt="Icon 8"
+        class="absolute bottom-60 right-60 w-32 h-32 z-0 animate-float delay-7000">
 </div>
 
-<section class="text-gray-100 body-font bg-base-300">
-    <div class="container px-5 py-24 mx-auto">
-        <div class="flex flex-wrap w-full mb-20 flex-col items-center text-center">
-            <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-base-content">
-                Neden Icon Generator AI?
-            </h1>
-            <p class="lg:w-1/2 w-full leading-relaxed text-base-content/70">
-                Yapay zeka destekli ikon oluşturucumuz ile sınırsız sayıda özgün ikon tasarlayın.
-                Topluluk içerisinde paylaşın ve ilham alın.
-            </p>
-        </div>
-        <div class="flex flex-wrap -m-4">
-            <div class="xl:w-1/3 md:w-1/2 p-4">
-                <div class="border border-base-content/20 p-6 rounded-lg">
+
+<!-- Problem Section -->
+<section class="bg-base-200 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-base-content mb-6">
+            Missing Out on a Killer Icon?
+        </h2>
+        <p class="text-lg text-base-content/70 max-w-3xl mx-auto">
+            Every second you use a dull, uninspired icon is a second you could be losing potential users. Sound
+            familiar?
+        </p>
+        <ul class="mt-6 text-left max-w-2xl mx-auto space-y-4 text-base-content/70 list-disc pl-6">
+            <li>Wasting hours trying (and failing) to design something memorable.</li>
+            <li>Paying top dollar for design agencies, then still waiting on revisions.</li>
+            <li>Resorting to stock icons that fail to scream “next big thing.”</li>
+        </ul>
+    </div>
+</section>
+
+<!-- Solution Section -->
+<section class="bg-base-300 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-primary mb-6">
+            The Icon Generator AI “No-Brainer” Offer
+        </h2>
+        <p class="text-lg text-base-content/70 max-w-2xl mx-auto">
+            Let our AI handle the heavy lifting so you can focus on building your empire. We guarantee icons so
+            stunning, you’ll wonder how you ever went without them.
+        </p>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <div class="card-body items-center text-center">
                     <div
-                        class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-primary/20 text-primary mb-4">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                        class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center text-primary mb-4">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
                             <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                         </svg>
                     </div>
-                    <h2 class="text-lg text-base-content font-medium title-font mb-2">Shooting Stars</h2>
-                    <p class="leading-relaxed text-base text-base-content/70">Fingerstache flexitarian street art 8-bit
-                        waist co, subway tile
-                        poke farm.</p>
+                    <h3 class="text-xl font-bold text-base-content">Lightning-Fast Results</h3>
+                    <p class="text-base-content/70">Create premium icons in under five minutes.</p>
                 </div>
             </div>
-            <div class="xl:w-1/3 md:w-1/2 p-4">
-                <div class="border border-base-content/20 p-6 rounded-lg">
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <div class="card-body items-center text-center">
                     <div
-                        class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-primary/20 text-primary mb-4">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                        class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center text-primary mb-4">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
                             <circle cx="6" cy="6" r="3"></circle>
                             <circle cx="6" cy="18" r="3"></circle>
                             <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
                         </svg>
                     </div>
-                    <h2 class="text-lg text-base-content font-medium title-font mb-2">The Catalyzer</h2>
-                    <p class="leading-relaxed text-base text-base-content/70">Fingerstache flexitarian street art 8-bit
-                        waist co, subway tile
-                        poke farm.</p>
+                    <h3 class="text-xl font-bold text-base-content">Uniquely Yours</h3>
+                    <p class="text-base-content/70">Capture your brand’s essence and stand out from the pack.</p>
                 </div>
             </div>
-            <div class="xl:w-1/3 md:w-1/2 p-4">
-                <div class="border border-base-content/20 p-6 rounded-lg">
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow duration-300">
+                <div class="card-body items-center text-center">
                     <div
-                        class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-primary/20 text-primary mb-4">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
-                            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                            <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                    </div>
-                    <h2 class="text-lg text-base-content font-medium title-font mb-2">Neptune</h2>
-                    <p class="leading-relaxed text-base text-base-content/70">Fingerstache flexitarian street art 8-bit
-                        waist co, subway tile
-                        poke farm.</p>
-                </div>
-            </div>
-            <div class="xl:w-1/3 md:w-1/2 p-4">
-                <div class="border border-base-content/20 p-6 rounded-lg">
-                    <div
-                        class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-primary/20 text-primary mb-4">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
-                            <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-lg text-base-content font-medium title-font mb-2">Melanchole</h2>
-                    <p class="leading-relaxed text-base text-base-content/70">Fingerstache flexitarian street art 8-bit
-                        waist co, subway tile
-                        poke farm.</p>
-                </div>
-            </div>
-            <div class="xl:w-1/3 md:w-1/2 p-4">
-                <div class="border border-base-content/20 p-6 rounded-lg">
-                    <div
-                        class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-primary/20 text-primary mb-4">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
-                            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
-                        </svg>
-                    </div>
-                    <h2 class="text-lg text-base-content font-medium title-font mb-2">Bunker</h2>
-                    <p class="leading-relaxed text-base text-base-content/70">Fingerstache flexitarian street art 8-bit
-                        waist co, subway tile
-                        poke farm.</p>
-                </div>
-            </div>
-            <div class="xl:w-1/3 md:w-1/2 p-4">
-                <div class="border border-base-content/20 p-6 rounded-lg">
-                    <div
-                        class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-primary/20 text-primary mb-4">
-                        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
+                        class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center text-primary mb-4">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6" viewBox="0 0 24 24">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-lg text-base-content font-medium title-font mb-2">Ramona Falls</h2>
-                    <p class="leading-relaxed text-base text-base-content/70">Fingerstache flexitarian street art 8-bit
-                        waist co, subway tile
-                        poke farm.</p>
+                    <h3 class="text-xl font-bold text-base-content">Beginner-Friendly</h3>
+                    <p class="text-base-content/70">No design background? No problem. Our interface is butter-smooth.
+                    </p>
                 </div>
             </div>
         </div>
-        <button
-            class="flex mx-auto mt-16 text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Button</button>
+        <a href="#generate"
+            class="btn btn-primary btn-lg mt-10 shadow-lg hover:scale-105 transition-transform duration-200">
+            Try It Before You Regret It
+        </a>
     </div>
 </section>
 
-<span></span>
+<!-- How It Works Section -->
+<section class="bg-base-200 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-base-content mb-6">
+            3 Steps to Your Million-Dollar Icon
+        </h2>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-2xl font-bold text-primary">1. Tell Us Your Vision</h3>
+                    <p class="mt-2 text-base-content/70">Share your app’s style, vibe, and target audience.</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-2xl font-bold text-primary">2. Let AI Work Its Magic</h3>
+                    <p class="mt-2 text-base-content/70">We’ll generate eye-popping concepts in seconds.</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-2xl font-bold text-primary">3. Customize &amp; Download</h3>
+                    <p class="mt-2 text-base-content/70">Refine your fave design and download it instantly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="bg-base-300 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-primary mb-6">
+            Dominate the Market with Power-Packed Features
+        </h2>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-xl font-bold text-primary">Endless Possibilities</h3>
+                    <p class="mt-2 text-base-content/70">Mix, match, and blend styles for truly original icons.</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-xl font-bold text-primary">100% Customizable</h3>
+                    <p class="mt-2 text-base-content/70">You have total control over colors, shapes, and finishing
+                        touches.</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-xl font-bold text-primary">Rapid Turnaround</h3>
+                    <p class="mt-2 text-base-content/70">Don’t wait weeks—get pro-level icons in minutes.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Social Proof Section -->
+<section class="bg-base-200 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-base-content mb-6">
+            Your Competitors Are Already Onboard
+        </h2>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <p class="text-base-content/70 italic">
+                        "Icon Generator AI gave my app the star power it needed. A total game-changer!"
+                    </p>
+                    <p class="mt-2 font-semibold text-base-content">- Ayşe Yılmaz, Mobile App Developer</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <p class="text-base-content/70 font-bold">“Over 5,000 Icons Shipped”</p>
+                    <p class="mt-2 text-base-content/70">Join a growing community of entrepreneurs leveling up their
+                        brand at warp speed.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Pricing Section -->
+<section class="bg-base-300 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-primary mb-6">
+            Icon Plans That Leave No Excuse
+        </h2>
+        <p class="text-lg text-base-content/70 max-w-2xl mx-auto">
+            We’ve removed every barrier to give you the ultimate advantage. <strong>Now it's on you to act.</strong>
+        </p>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-2xl font-bold text-primary">Starter Plan</h3>
+                    <p class="mt-2 text-base-content/70">Everything you need to forge a stand-out icon—at a price that
+                        won't break the bank.</p>
+                    <a href="#start-plan" class="btn btn-primary mt-4">Claim Your Starter Deal</a>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body items-center text-center">
+                    <h3 class="text-2xl font-bold text-primary">Pro Plan</h3>
+                    <p class="mt-2 text-base-content/70">Unlock unlimited icon creations, advanced customization, and
+                        total creative freedom.</p>
+                    <a href="#pro-plan" class="btn btn-primary mt-4">Elevate to Pro</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA Section -->
+<section class="bg-gradient-to-br from-neutral to-base-300 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-primary mb-6">
+            The Icon That Could Launch Your $100M Vision—Ready to Own It?
+        </h2>
+        <p class="text-lg text-neutral-content/80 max-w-2xl mx-auto">
+            Don’t let a forgettable icon cost you the big league. Icon Generator AI has your back—like a swoosh that
+            never quits.
+        </p>
+        <a href="#generate"
+            class="btn btn-primary btn-lg mt-8 shadow-lg hover:scale-105 transition-transform duration-200">
+            Craft Your Icon Now
+        </a>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="bg-base-200 py-16">
+    <div class="container mx-auto text-center px-4">
+        <h2 class="text-4xl font-semibold text-base-content mb-6">
+            Got Questions? We’ve Got Answers
+        </h2>
+        <div class="mt-8 max-w-3xl mx-auto space-y-4">
+            <div class="collapse collapse-plus bg-base-100 border border-base-300 rounded-box">
+                <input type="checkbox" />
+                <div class="collapse-title text-lg font-medium text-base-content">
+                    How does Icon Generator AI actually work?
+                </div>
+                <div class="collapse-content">
+                    <p class="text-base-content/70">
+                        Just tell us your app’s style and vibe. We’ll generate multiple icon concepts in seconds, ready
+                        for you to refine and download. Simple. Fast. Powerful.
+                    </p>
+                </div>
+            </div>
+            <div class="collapse collapse-plus bg-base-100 border border-base-300 rounded-box">
+                <input type="checkbox" />
+                <div class="collapse-title text-lg font-medium text-base-content">
+                    Which file formats do I get?
+                </div>
+                <div class="collapse-content">
+                    <p class="text-base-content/70">
+                        We provide high-res PNG and SVG for maximum flexibility on any platform.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 @code {
     [CascadingParameter]
@@ -167,6 +295,59 @@
         if (HttpContext?.User?.Identity?.IsAuthenticated == true)
             isAuthenticated = true;
     }
-
-
 }
+<style>
+    @@keyframes float {
+        0% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-20px);
+        }
+
+        100% {
+            transform: translateY(0);
+        }
+    }
+
+    .animate-float {
+        animation: float 4s infinite ease-in-out;
+    }
+
+    .delay-1000 {
+        animation-delay: 1s;
+    }
+
+    .delay-2000 {
+        animation-delay: 2s;
+    }
+
+    .delay-3000 {
+        animation-delay: 3s;
+    }
+
+    .delay-4000 {
+        animation-delay: 4s;
+    }
+
+    .delay-5000 {
+        animation-delay: 5s;
+    }
+
+    .delay-6000 {
+        animation-delay: 6s;
+    }
+
+    .delay-7000 {
+        animation-delay: 7s;
+    }
+
+    .delay-8000 {
+        animation-delay: 8s;
+    }
+
+    .delay-9000 {
+        animation-delay: 9s;
+    }
+</style>
