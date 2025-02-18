@@ -2,9 +2,12 @@
 @using System.ComponentModel.DataAnnotations
 @using IconGeneratorAI.Domain.Dtos
 @using IconGeneratorAI.Domain.Entities
-@using IconGeneratorAI.Domain.Enums
+@using IconGeneratorAI.Shared.Enums
 @using IconGeneratorAI.Shared.Models
 @using Microsoft.AspNetCore.Authorization
+@using System.Text.Json
+@inject IToastService ToastService
+
 @inject HttpClient Http
 
 @attribute [Authorize]
@@ -76,51 +79,83 @@
                             <InputSelect id="model" class="select select-bordered select-lg w-full"
                                  TValue="Guid" ValueChanged="HandleModelChange" ValueExpression="@(() => formModel.AIModelId)">
 
-                                <option value="" selected>Select model...</option>
+                                <option value="@Guid.Empty" selected>Select model...</option>
                                 @foreach (var model in aiModels)
                                 {
                                     <option value="@model.Id">@model.Name</option>
                                 }
 
                             </InputSelect>
-                            <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
-                        </div>
-
-
-                        <div class="form-control w-full mb-6">
-                            <label class="label">
-                                <span class="label-text font-medium">Style</span>
-                            </label>
-                            <InputSelect id="style" class="select select-bordered select-lg w-full"
-                                @bind-Value="formModel.Style">
-
-                                <option value="">Select style...</option>
-                                @foreach (var style in Enum.GetValues<IconStyle>())
-                                {
-                                    <option value="@style">@style.ToString()</option>
-                                }
-
-                            </InputSelect>
-                            <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
+                            <ValidationMessage For="@(() => formModel.AIModelId)" class="text-error text-sm mt-1" />
                         </div>
 
                         @if (selectedAIModel is not null)
                         {
-                            <div class="form-control w-full mb-6">
-                                <label class="label">
-                                    <span class="label-text font-medium">Size</span>
-                                </label>
-                                <InputSelect id="size" class="select select-bordered select-lg w-full"
-                                    @bind-Value="formModel.Size">
-                                    <option value="">Select size...</option>
-                                    @foreach (var parameter in selectedAIModel.Parameters)
+                            @foreach (var param in selectedAIModel.Parameters)
+                            {
+                                <div class="form-control w-full mb-6">
+                                    <label class="label">
+                                        <span class="label-text font-medium">@param.DisplayName</span>
+                                        @if (!string.IsNullOrEmpty(param.DefaultValue))
+                                        {
+                                            <span class="label-text-alt text-base-content/70">Default: @param.DefaultValue</span>
+                                        }
+                                    </label>
+                                    
+                                    @switch (param.Type)
                                     {
-                                        <option value="@parameter">@parameter</option>
-                                    }
+                                         case IconGeneratorAI.Shared.Enums.AIModelParameterType.String:
+                                            <InputSelect id="@param.Id" class="select select-bordered select-lg w-full"
+                                                         @bind-Value="formModel.Parameters.First(p => p.Id == param.Id).Value">
+                                                <option value="">Select @param.DisplayName...</option>
+                                                @foreach (var value in param.PossibleValues)
+                                                {
+                                                    <option value="@value">@value</option>
+                                                }
+                                            </InputSelect>
+                                            break;
 
-                                </InputSelect>
-                                <ValidationMessage For="@(() => formModel.Size)" class="text-error text-sm mt-1" />
-                            </div>
+                                        case IconGeneratorAI.Shared.Enums.AIModelParameterType.Enum:
+                                            <InputSelect id="@param.Id" class="select select-bordered select-lg w-full"
+                                                         @bind-Value="formModel.Parameters.First(p => p.Id == param.Id).Value">
+                                                <option value="">Select @param.DisplayName...</option>
+                                                @foreach (var value in param.PossibleValues)
+                                                {
+                                                    <option value="@value">@value</option>
+                                                }
+                                            </InputSelect>
+                                            break;
+
+                                        case IconGeneratorAI.Shared.Enums.AIModelParameterType.Boolean:
+                                            <label class="label cursor-pointer gap-4 px-0">
+                                                <span class="label-text flex-1">@param.DisplayName</span>
+                                                <input type="checkbox" class="toggle toggle-primary" 
+                                                       checked="@(formModel.Parameters.First(p => p.Id == param.Id).Value == "True")"
+                                                       @onchange="@(e => UpdateBooleanParameter(param.Id, (bool)e.Value))" />
+                                            </label>
+                                            break;
+
+                                        case IconGeneratorAI.Shared.Enums.AIModelParameterType.Float:
+                                            <InputText id="@param.Id" class="input input-bordered input-lg w-full"
+                                                       type="number" step="0.01" @bind-Value="formModel.Parameters.First(p => p.Id == param.Id).Value" />
+                                            break;
+
+                                        default:
+                                            var inputType = param.Type switch
+                                            {
+                                                IconGeneratorAI.Shared.Enums.AIModelParameterType.Integer => "number",
+                                                _ => "text"
+                                            };
+                                            <InputText id="@param.Id" class="input input-bordered input-lg w-full"
+                                                       type="@inputType" @bind-Value="formModel.Parameters.First(p => p.Id == param.Id).Value"
+                                                       />
+                                            break;
+                                    }
+                                    
+                                    <ValidationMessage For="@(() => formModel.Parameters.First(p => p.Id == param.Id).Value)" 
+                                                     class="text-error text-sm mt-1" />
+                                </div>
+                            }
                         }
 
                         <div class="card-actions">
@@ -133,7 +168,7 @@
                             }
                             else
                             {
-                                <button type="submit" class="btn btn-primary btn-lg w-full">
+                                <button type="submit" class="btn btn-primary btn-lg w-full" disabled="@(formModel.AIModelId == Guid.Empty || isLoading)">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24"
                                         stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -175,80 +210,6 @@
     private List<GetAllAIModelsDto> aiModels = null;
     private GetAllAIModelsDto selectedAIModel = null;
 
-    private List<AIModelParameter> modelParameters = new(){
-        new AIModelParameter{
-            Name = "size",
-            DisplayName = "Size",
-            Type = AIModelParameterType.String,
-            IsRequired = true,
-            DefaultValue = "1024x1024",
-            PossibleValues = ["1365x1024",
-"1024x1024",
-"1365x1024",
-"1024x1365",
-"1536x1024",
-"1024x1536",
-"1920x1024",
-"1024x1920",
-"1024x2048",
-"2048x1024",
-"1434x1024",
-"1024x1434",
-"1024x1280",
-"1280x1024",
-"1024x1707",
-"1707x1024",]
-        },
-        new AIModelParameter{
-            Name = "style",
-            DisplayName = "Style",
-            Type = AIModelParameterType.String,
-            IsRequired = true,
-            DefaultValue = "any",
-            PossibleValues = [
-                "any",
-                "realistic_image",
-                "digital_illustration",
-                "digital_illustration/pixel_art",
-                "digital_illustration/hand_drawn",
-                "digital_illustration/grain",
-                "digital_illustration/infantile_sketch",
-                "digital_illustration/2d_art_poster",
-                "digital_illustration/handmade_3d",
-                "digital_illustration/hand_drawn_outline",
-                "digital_illustration/engraving_color",
-                "digital_illustration/2d_art_poster_2",
-                "realistic_image/b_and_w",
-                "realistic_image/hard_flash",
-                "realistic_image/hdr",
-                "realistic_image/natural_light",
-                "realistic_image/studio_portrait",
-                "realistic_image/enterprise",
-                "realistic_image/motion_blur"
-            ]
-        },
-        new AIModelParameter{
-            Name = "aspect_ratio",
-            DisplayName = "Aspect Ratio",
-            Type = AIModelParameterType.String,
-            IsRequired = true,
-            DefaultValue = "1:1",
-            PossibleValues = [
-                "1:1",
-                "16:9",
-                "21:9",
-                "3:2",
-                "2:3",
-                "4:5",
-                "5:4",
-                "3:4",
-                "4:3",
-                "9:16",
-                "9:21"
-            ]
-        }
-        };
-
     protected override async Task OnInitializedAsync()
     {
         aiModels = await Http.GetFromJsonAsync<List<GetAllAIModelsDto>>("/api/ai-models");
@@ -262,24 +223,46 @@
             return;
 
         var id = args;
-
         selectedAIModel = aiModels.FirstOrDefault(x => x.Id == id);
-
         formModel.AIModelId = id;
+        
+        // Parametreleri initialize et
+        formModel.Parameters = selectedAIModel.Parameters.Select(p => 
+            new FormParameterModel { 
+                Id = p.Id, 
+                Value = p.DefaultValue ?? string.Empty 
+            }).ToList();
+
+
+        StateHasChanged();
+    }
+
+    private void UpdateBooleanParameter(Guid paramId, bool value)
+    {
+        var parameter = formModel.Parameters.FirstOrDefault(p => p.Id == paramId);
+        if (parameter != null)
+        {
+            parameter.Value = value.ToString();
+        }
     }
 
     private async Task HandleValidSubmit()
-
-
     {
         try
         {
             isLoading = true;
-            var response = await Http.PostAsJsonAsync("/api/icon-results/", formModel);
+
+            var response = await Http.PostAsJsonAsync("/api/icon-generations/", formModel);
 
             if (response.IsSuccessStatusCode)
             {
-                iconResult = await response.Content.ReadFromJsonAsync<IconResult>();
+                //iconResult = await response.Content.ReadFromJsonAsync<IconResult>();
+
+                ToastService.ShowSuccess("Icon generated successfully!");
+
+                Console.WriteLine("Icon generated successfully!");
+
+
             }
             else
             {
@@ -295,7 +278,9 @@
                 {
                     Console.WriteLine("Something went wrong");
                 }
+               
             }
+            
         }
         catch (Exception ex)
         {
@@ -330,45 +315,18 @@
     {
         [Required]
         public Guid AIModelId { get; set; }
-        [Required]
-        public IconStyle Style { get; set; }
+
 
         [Required, MinLength(3), MaxLength(500)]
         public string Prompt { get; set; }
         [Required]
-        public string Size { get; set; }
-
-
-        public FormModel()
-        {
-            Style = Enum.GetValues<IconStyle>().First();
-        }
+        public List<FormParameterModel> Parameters { get; set; } = new();
     }
 
-    internal class SizeModel
+    internal class FormParameterModel
     {
-        public string Name { get; set; }
+        public Guid Id { get; set; }
         public string Value { get; set; }
     }
 
-
-    private List<string> sizes = new()
-{
-"1365x1024",
-"1024x1024",
-"1365x1024",
-"1024x1365",
-"1536x1024",
-"1024x1536",
-"1920x1024",
-"1024x1920",
-"1024x2048",
-"2048x1024",
-"1434x1024",
-"1024x1434",
-"1024x1280",
-"1280x1024",
-"1024x1707",
-"1707x1024",
-};
 }

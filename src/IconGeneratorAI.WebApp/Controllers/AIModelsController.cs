@@ -1,4 +1,6 @@
+using IconGeneratorAI.Domain.Enums;
 using IconGeneratorAI.Persistence.EntityFramework.Contexts;
+using IconGeneratorAI.Shared.Enums;
 using IconGeneratorAI.Shared.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +25,8 @@ namespace IconGeneratorAI.WebApp.Controllers
             var aiModels = await _context
             .AIModels
             .AsNoTracking()
-            .Select(x => new GetAllAIModelsDto(x.Id, x.Name, x.Description, x.ModelUrl, x.Parameters.Select(p => p.Name).ToList()))
+            .Include(x => x.Parameters)
+            .Select(x => new GetAllAIModelsDto(x.Id, x.Name, x.Parameters.Select(p => new GetAllAIModelsAIParameterDto(p.Id, p.AIModelId, p.DisplayName, AIModelParameterTypeExtensions.FromInt((int)p.Type), p.IsRequired, p.DefaultValue, p.PossibleValues)).ToList()))
             .ToListAsync(cancellationToken);
 
             return Ok(aiModels);

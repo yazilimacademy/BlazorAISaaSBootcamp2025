@@ -1,0 +1,220 @@
+﻿@page "/home"
+@using IconGeneratorAI.WebApp.Client.Components
+@using IconGeneratorAI.Persistence.EntityFramework.Contexts
+@using IconGeneratorAI.WebApp.Models
+@using Microsoft.EntityFrameworkCore
+@using IconGeneratorAI.Persistence.EntityFramework.Extensions
+@using System.Text.Json
+
+<PageTitle>Icon Generator AI | Your Icon, Your 100M Brand</PageTitle>
+
+<!-- Hero Section -->
+<div class="min-h-screen bg-base-200 flex items-center">
+    <div class="container mx-auto px-4 py-20">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-accent text-transparent bg-clip-text">
+                Stop Wasting Time & Money on Generic Icons
+            </h1>
+            <p class="text-xl mb-8 text-gray-400">
+                Create Professional Startup Icons in Seconds with AI
+            </p>
+            <button class="btn btn-primary btn-lg gap-2 transform hover:scale-105 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                @if (isAuthenticated)
+                {
+                    <span>Generate New Icon</span>
+                }
+                else
+                {
+                    <span>Start Free Trial</span>
+                }
+            </button>
+            <p class="mt-4 text-sm text-gray-500">No credit card required - 14-day free trial</p>
+        </div>
+    </div>
+</div>
+
+<!-- Problem Section -->
+<div class="py-20 bg-base-100">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Why Generic Icons Hurt Your Startup</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-error">🚫 Brand Dilution</h3>
+                    <p class="text-gray-400">Generic icons make your startup look unprofessional and forgettable</p>
+                </div>
+            </div>
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-warning">⏳ Wasted Time</h3>
+                    <p class="text-gray-400">Endless revisions with designers delay your launch</p>
+                </div>
+            </div>
+            <div class="card bg-base-200 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title text-info">💸 High Costs</h3>
+                    <p class="text-gray-400">Professional designers charge $500+ per icon</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Solution Section -->
+<div class="py-20 bg-base-200">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-8">AI-Powered Icon Generation</h2>
+            <div class="mockup-browser border bg-base-300">
+                <div class="mockup-browser-toolbar">
+                    <div class="input bg-base-200">https://yourbrand.com/icon-generator</div>
+                </div>
+                <div class="flex justify-center px-4 py-16 bg-base-200">
+                    <div class="grid grid-cols-3 gap-4">
+                        @foreach (var icon in sampleIcons)
+                        {
+                            <div class="card bg-base-100 shadow-lg">
+                                <figure class="px-4 pt-4">
+                                    <img src="@icon" alt="AI generated icon" class="rounded-xl h-32 w-32 object-contain" />
+                                </figure>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="py-20 bg-base-100">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">3 Steps to Your Perfect Icon</h2>
+        <div class="steps steps-vertical lg:steps-horizontal">
+            <div class="step step-primary">
+                <div class="step-circle">1</div>
+                <div class="step-content mt-4">
+                    <h3 class="font-bold text-xl">Describe Your Vision</h3>
+                    <p class="text-gray-400">Tell us about your brand in simple words</p>
+                </div>
+            </div>
+            <div class="step step-primary">
+                <div class="step-circle">2</div>
+                <div class="step-content mt-4">
+                    <h3 class="font-bold text-xl">AI Magic Happens</h3>
+                    <p class="text-gray-400">Our algorithms generate unique designs</p>
+                </div>
+            </div>
+            <div class="step step-primary">
+                <div class="step-circle">3</div>
+                <div class="step-content mt-4">
+                    <h3 class="font-bold text-xl">Download & Use</h3>
+                    <p class="text-gray-400">High-resolution files ready in minutes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pricing Section -->
+<div class="py-20 bg-base-200">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Simple & Transparent Pricing</h2>
+        <div class="flex justify-center">
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl w-full">
+                <div class="card bg-base-100 shadow-xl h-full">
+                    <div class="card-body">
+                        <h3 class="card-title">Starter</h3>
+                        <div class="text-4xl font-bold mt-4">$29<span class="text-lg text-gray-500">/mo</span></div>
+                        <div class="divider"></div>
+                        <ul class="space-y-3">
+                            <li class="flex items-center"><span class="mr-2">✓</span>5 icons/month</li>
+                            <li class="flex items-center"><span class="mr-2">✓</span>Basic customization</li>
+                            <li class="flex items-center"><span class="mr-2">✓</span>PNG format</li>
+                        </ul>
+                        <div class="card-actions mt-6">
+                            <button class="btn btn-outline btn-primary w-full">Get Started</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card bg-primary shadow-xl transform scale-105">
+                    <div class="card-body">
+                        <div class="badge badge-secondary absolute top-4 right-4">POPULAR</div>
+                        <h3 class="card-title text-primary-content">Pro</h3>
+                        <div class="text-4xl font-bold mt-4 text-primary-content">$99<span class="text-lg">/mo</span>
+                        </div>
+                        <div class="divider"></div>
+                        <ul class="space-y-3 text-primary-content">
+                            <li class="flex items-center"><span class="mr-2">✓</span>Unlimited icons</li>
+                            <li class="flex items-center"><span class="mr-2">✓</span>Advanced customization</li>
+                            <li class="flex items-center"><span class="mr-2">✓</span>SVG + PNG formats</li>
+                        </ul>
+                        <div class="card-actions mt-6">
+                            <button class="btn btn-secondary w-full">Try Free for 14 Days</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- ... existing pricing cards ... -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Section -->
+<div class="py-20 bg-base-100">
+    <div class="container mx-auto px-4 max-w-4xl">
+        <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+            <div class="collapse collapse-plus bg-base-200">
+                <input type="radio" name="faq" />
+                <div class="collapse-title text-xl font-medium">
+                    How does the AI icon generator work?
+                </div>
+                <div class="collapse-content">
+                    <p>Our AI analyzes your brand description and generates unique icons using advanced machine learning
+                        models trained on professional designs.</p>
+                </div>
+            </div>
+            <!-- ... other FAQ items ... -->
+        </div>
+    </div>
+</div>
+
+<!-- Final CTA -->
+<div class="py-20 bg-base-200">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-6">Ready to Create Your Icon?</h2>
+        <p class="text-xl mb-8 text-gray-400">Join 5,000+ startups who upgraded their branding</p>
+        <button class="btn btn-primary btn-lg gap-2">
+            Start Generating Now
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+        </button>
+    </div>
+</div>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+    private bool isAuthenticated = false;
+
+    private List<string> sampleIcons = new List<string>
+{
+"images/icons/icon1.svg",
+"images/icons/icon2.svg",
+"images/icons/icon3.svg"
+};
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (HttpContext?.User?.Identity?.IsAuthenticated == true)
+            isAuthenticated = true;
+    }
+}
