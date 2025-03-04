@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.11.3" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.33.0" />
     <PackageReference Include="Microsoft.SemanticKernel.Connectors.Ollama" Version="1.33.0-alpha" />
+    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
     <ProjectReference Include="..\IconGeneratorAI.Persistence\IconGeneratorAI.Persistence.csproj" />
     <ProjectReference Include="..\IconGeneratorAI.Shared\IconGeneratorAI.Shared.csproj" />
     <ProjectReference Include="..\IconGeneratorAI.WebApp.Client\IconGeneratorAI.WebApp.Client.csproj" />

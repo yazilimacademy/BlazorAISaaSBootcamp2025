@@ -10,7 +10,7 @@ public sealed class UserBalanceConfiguration : IEntityTypeConfiguration<UserBala
        public void Configure(EntityTypeBuilder<UserBalance> builder)
        {
               // ID - Primary Key
-              builder.HasKey(x => x.UserId);
+              builder.HasKey(x => x.Id);
 
               // Relationships
               builder.HasOne(x => x.User)

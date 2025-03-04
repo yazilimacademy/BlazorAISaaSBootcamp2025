@@ -1,0 +1,44 @@
+﻿@page "/icon-generations"
+@using IconGeneratorAI.Persistence.EntityFramework.Contexts
+@using IconGeneratorAI.WebApp.Client.Components
+@using Microsoft.AspNetCore.Authorization
+@using IconGeneratorAI.Shared.Models
+@using System.Security.Claims
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext DbContext
+@attribute [Authorize]
+
+<IconGenerations Generations="@iconGenerations" />
+
+
+@code {
+
+    public List<GetIconGenerationsResponseDto> iconGenerations;
+
+    [CascadingParameter]
+    public HttpContext HttpContext { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userId = Guid.Parse(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+        iconGenerations = await DbContext.IconGenerations
+        .AsNoTracking()
+        .Include(x => x.AIModel)
+        .Where(x => x.UserId == userId)
+        .OrderByDescending(x => x.CreatedAt)
+        .Select(x => new GetIconGenerationsResponseDto
+        {
+            Id = x.Id,
+            Prompt = x.Prompt,
+            ImageUrl = x.ImageUrl,
+            CreatedAt = x.CreatedAt,
+            AIModelName = x.AIModel.Name,
+            Style = x.Style.ToString()
+        })
+        .ToListAsync();
+
+
+        await base.OnInitializedAsync();
+    }
+}

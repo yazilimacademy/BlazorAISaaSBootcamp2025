@@ -1,0 +1,83 @@
+﻿@using IconGeneratorAI.Shared.Models
+@using Microsoft.AspNetCore.SignalR.Client
+@inject HttpClient Http
+@inject ILogger<UserBalanceNavbarWidget> Logger
+@inject NavigationManager NavigationManager
+@rendermode InteractiveWebAssembly
+@implements IAsyncDisposable
+
+<span class="badge badge-outline badge-info flex items-center">
+    <svg class="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+        <text x="12" y="16" font-size="12" text-anchor="middle" fill="currentColor">$</text>
+    </svg>
+    @if (balance.HasValue)
+    {
+        <div class="animate-[fadeIn_0.3s_ease-in]">@balance</div>
+    }
+    else
+    {
+        <span class="text-gray-500">-</span>
+    }
+</span>
+
+<style>
+    @@keyframes fadeIn
+    {
+        from {
+            opacity: 0;
+            transform: translateY(-4px);
+        }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+@code {
+    private int? balance;
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            hubConnection = new HubConnectionBuilder()
+            .WithUrl(NavigationManager.BaseUri + "hubs/user-hub")
+            .Build();
+
+            hubConnection.On<int>("ReceiveUserBalance", (userBalance) =>
+            {
+                balance = userBalance;
+                StateHasChanged();
+            });
+
+            await hubConnection.StartAsync();
+
+
+            var balanceDto = await Http.GetFromJsonAsync<UserBalanceWidgetDto>("/api/user-balances");
+
+            balance = balanceDto?.Balance;
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            // This is normal for non-authenticated users
+            Logger.LogInformation("User not authenticated, skipping balance load");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading user balance");
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.StopAsync();
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

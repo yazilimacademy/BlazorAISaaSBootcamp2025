@@ -11,4 +11,17 @@ public sealed class IconGenerationParameter : EntityBase
     public AIModelParameter AIModelParameter { get; set; }
 
     public string Value { get; set; } // e.g. "1024x1024"
+
+
+    public static IconGenerationParameter Create(Guid aIModelParameterId, string value, Guid userId)
+    {
+        return new IconGenerationParameter()
+        {
+            Id = Guid.CreateVersion7(),
+            AIModelParameterId = aIModelParameterId,
+            Value = value,
+            CreatedAt = DateTimeOffset.UtcNow,
+            CreatedByUserId = userId.ToString(),
+        };
+    }
 }

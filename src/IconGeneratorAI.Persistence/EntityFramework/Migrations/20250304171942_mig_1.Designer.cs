@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
+namespace IconGeneratorAI.Persistence.Entityframework.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250211190050_InitialCreate23456")]
-    partial class InitialCreate23456
+    [Migration("20250304171942_mig_1")]
+    partial class mig_1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -268,9 +268,10 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
 
             modelBuilder.Entity("IconGeneratorAI.Domain.Entities.UserBalance", b =>
                 {
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("user_id");
+                        .HasColumnName("id");
 
                     b.Property<int>("Balance")
                         .HasColumnType("integer")
@@ -286,10 +287,6 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("created_by_user_id");
 
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid")
-                        .HasColumnName("id");
-
                     b.Property<DateTimeOffset?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("updated_at");
@@ -299,8 +296,16 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("updated_by_user_id");
 
-                    b.HasKey("UserId")
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("Id")
                         .HasName("pk_user_balances");
+
+                    b.HasIndex("UserId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_user_balances_user_id");
 
                     b.ToTable("user_balances", (string)null);
                 });

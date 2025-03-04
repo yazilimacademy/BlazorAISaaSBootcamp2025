@@ -10,7 +10,6 @@ public sealed class UserBalanceTransactionConfiguration : IEntityTypeConfigurati
     {
         // ID - Primary Key
         builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id).ValueGeneratedOnAdd(); // Identity - Auto Increment
 
         builder.Property(x => x.Amount)
         .IsRequired();

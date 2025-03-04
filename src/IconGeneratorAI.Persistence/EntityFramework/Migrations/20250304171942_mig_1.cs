@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
+namespace IconGeneratorAI.Persistence.Entityframework.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class mig_1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,6 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                     name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
                     description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
                     model_url = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    sizes = table.Column<string>(type: "jsonb", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     created_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -77,6 +76,34 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ai_model_parameters",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ai_model_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    display_name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    type = table.Column<short>(type: "SMALLINT", nullable: false),
+                    is_required = table.Column<bool>(type: "boolean", nullable: false),
+                    default_value = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    possible_values = table.Column<string>(type: "jsonb", nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    created_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    updated_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_ai_model_parameters", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_ai_model_parameters_ai_models_ai_model_id",
+                        column: x => x.ai_model_id,
+                        principalTable: "ai_models",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "application_role_claims",
                 columns: table => new
                 {
@@ -90,7 +117,7 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 {
                     table.PrimaryKey("pk_application_role_claims", x => x.id);
                     table.ForeignKey(
-                        name: "fk_application_role_claims_roles_role_id",
+                        name: "fk_application_role_claims_asp_net_roles_role_id",
                         column: x => x.role_id,
                         principalTable: "application_roles",
                         principalColumn: "id",
@@ -111,7 +138,7 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 {
                     table.PrimaryKey("pk_application_user_claims", x => x.id);
                     table.ForeignKey(
-                        name: "fk_application_user_claims_users_user_id",
+                        name: "fk_application_user_claims_asp_net_users_user_id",
                         column: x => x.user_id,
                         principalTable: "application_users",
                         principalColumn: "id",
@@ -190,7 +217,6 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                     ai_model_id = table.Column<Guid>(type: "uuid", nullable: false),
                     style = table.Column<short>(type: "SMALLINT", nullable: false),
                     prompt = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
-                    size = table.Column<string>(type: "character varying(20)", maxLength: 20, nullable: false),
                     image_url = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     primary_color = table.Column<string>(type: "character varying(10)", maxLength: 10, nullable: true),
@@ -208,22 +234,22 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                         column: x => x.ai_model_id,
                         principalTable: "ai_models",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "fk_icon_generations_users_user_id",
                         column: x => x.user_id,
                         principalTable: "application_users",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "user_balances",
                 columns: table => new
                 {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     user_id = table.Column<Guid>(type: "uuid", nullable: false),
                     balance = table.Column<int>(type: "integer", nullable: false),
-                    id = table.Column<Guid>(type: "uuid", nullable: false),
                     created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     created_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
@@ -231,11 +257,41 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_user_balances", x => x.user_id);
+                    table.PrimaryKey("pk_user_balances", x => x.id);
                     table.ForeignKey(
                         name: "fk_user_balances_users_user_id",
                         column: x => x.user_id,
                         principalTable: "application_users",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "icon_generation_parameters",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    icon_generation_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ai_model_parameter_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    value = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    created_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    created_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    updated_at = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    updated_by_user_id = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_icon_generation_parameters", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_icon_generation_parameters_ai_model_parameters_ai_model_par",
+                        column: x => x.ai_model_parameter_id,
+                        principalTable: "ai_model_parameters",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "fk_icon_generation_parameters_icon_generations_icon_generation",
+                        column: x => x.icon_generation_id,
+                        principalTable: "icon_generations",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -262,14 +318,19 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                         name: "fk_user_balance_transactions_user_balances_user_balance_id",
                         column: x => x.user_balance_id,
                         principalTable: "user_balances",
-                        principalColumn: "user_id",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "ix_ai_models_sizes",
-                table: "ai_models",
-                column: "sizes")
+                name: "ix_ai_model_parameters_ai_model_id",
+                table: "ai_model_parameters",
+                column: "ai_model_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_ai_model_parameters_possible_values",
+                table: "ai_model_parameters",
+                column: "possible_values")
                 .Annotation("Npgsql:IndexMethod", "GIN");
 
             migrationBuilder.CreateIndex(
@@ -316,6 +377,16 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "ix_icon_generation_parameters_ai_model_parameter_id",
+                table: "icon_generation_parameters",
+                column: "ai_model_parameter_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_icon_generation_parameters_icon_generation_id",
+                table: "icon_generation_parameters",
+                column: "icon_generation_id");
+
+            migrationBuilder.CreateIndex(
                 name: "ix_icon_generations_ai_model_id",
                 table: "icon_generations",
                 column: "ai_model_id");
@@ -329,6 +400,12 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 name: "ix_user_balance_transactions_user_balance_id",
                 table: "user_balance_transactions",
                 column: "user_balance_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_balances_user_id",
+                table: "user_balances",
+                column: "user_id",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -350,7 +427,7 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 name: "application_user_tokens");
 
             migrationBuilder.DropTable(
-                name: "icon_generations");
+                name: "icon_generation_parameters");
 
             migrationBuilder.DropTable(
                 name: "user_balance_transactions");
@@ -359,10 +436,16 @@ namespace IconGeneratorAI.Persistence.EntityFramework.Migrations
                 name: "application_roles");
 
             migrationBuilder.DropTable(
-                name: "ai_models");
+                name: "ai_model_parameters");
+
+            migrationBuilder.DropTable(
+                name: "icon_generations");
 
             migrationBuilder.DropTable(
                 name: "user_balances");
+
+            migrationBuilder.DropTable(
+                name: "ai_models");
 
             migrationBuilder.DropTable(
                 name: "application_users");

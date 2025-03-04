@@ -1,4 +1,6 @@
-﻿<div class="navbar bg-base-100 container mx-auto">
+﻿@using System.Security.Claims
+@using IconGeneratorAI.WebApp.Client.Components
+<div class="navbar bg-base-100 container mx-auto">
     <div class="navbar-start">
         <div class="dropdown">
             <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
@@ -12,6 +14,9 @@
                     <Authorized>
                         <li>
                             <NavLink class="nav-link text-lg" href="/create-icon">Generate</NavLink>
+                        </li>
+                        <li>
+                            <NavLink class="nav-link text-lg" href="/icon-generations">My Icons</NavLink>
                         </li>
                     </Authorized>
                     <NotAuthorized />
@@ -36,6 +41,9 @@
                     <li>
                         <NavLink class="nav-link text-lg" href="/create-icon">Generate</NavLink>
                     </li>
+                    <li>
+                        <NavLink class="nav-link text-lg" href="/icon-generations">My Icons</NavLink>
+                    </li>
                 </Authorized>
                 <NotAuthorized />
             </AuthorizeView>
@@ -50,15 +58,35 @@
         </ul>
     </div>
     <div class="navbar-end">
-
         <AuthorizeView>
             <Authorized>
-                <NavLink class="btn btn-outline btn-secondary" href="/Account/Logout">Logout</NavLink>
+                <div class="flex items-center">
+                    <div class="flex items-center bg-base-200 px-3 py-1 rounded-lg mr-4">
+                        <span class="text-lg font-semibold text-info mr-2">@fullName</span>
+                        <UserBalanceNavbarWidget />
+                    </div>
+                    <NavLink class="btn btn-sm btn-outline btn-secondary" href="/Account/Logout">Logout</NavLink>
+                </div>
             </Authorized>
             <NotAuthorized>
-                <NavLink class="btn btn-outline btn-secondary" href="/Account/Login">Login</NavLink>
+                <NavLink class="btn btn-sm btn-outline btn-secondary" href="/Account/Login">Login</NavLink>
             </NotAuthorized>
         </AuthorizeView>
-
     </div>
 </div>
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+    private string? fullName;
+    private string? firstName;
+    private string? lastName;
+    private string? balance;
+
+    protected override void OnInitialized()
+    {
+        fullName = HttpContext.User.FindFirst("FullName")?.Value;
+        firstName = HttpContext.User.FindFirst(ClaimTypes.GivenName)?.Value;
+        lastName = HttpContext.User.FindFirst(ClaimTypes.Surname)?.Value;
+        balance = HttpContext.User.FindFirst("Balance")?.Value;
+    }
+}

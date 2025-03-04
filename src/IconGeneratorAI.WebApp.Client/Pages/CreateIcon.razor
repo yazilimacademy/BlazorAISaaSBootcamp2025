@@ -193,7 +193,7 @@
                     <div class="mt-8">
                         <div
                             class="w-full rounded-xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-2xl">
-                            <img src="@iconResult.Url" alt="@formModel.Prompt" class="w-full h-auto" />
+                            <img src="@iconResult.ImageUrl" alt="@formModel.Prompt" class="w-full h-auto" />
                         </div>
                     </div>
                 }
@@ -206,7 +206,7 @@
     private FormModel formModel = new();
     private bool isLoading = false;
     private bool isMagicLoading = false;
-    private IconResult iconResult = null;
+    private CreateIconGenerationResponseDto iconResult = null;
     private List<GetAllAIModelsDto> aiModels = null;
     private GetAllAIModelsDto selectedAIModel = null;
 
@@ -256,7 +256,7 @@
 
             if (response.IsSuccessStatusCode)
             {
-                //iconResult = await response.Content.ReadFromJsonAsync<IconResult>();
+                iconResult = await response.Content.ReadFromJsonAsync<CreateIconGenerationResponseDto>();
 
                 ToastService.ShowSuccess("Icon generated successfully!");
 

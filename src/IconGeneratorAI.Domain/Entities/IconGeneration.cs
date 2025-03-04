@@ -20,4 +20,19 @@ public sealed class IconGeneration : EntityBase
 
     public ICollection<IconGenerationParameter> Parameters { get; set; } = [];
 
+    public static IconGeneration Create(Guid userId, Guid aIModelId, string prompt, string imageUrl)
+    {
+        return new IconGeneration()
+        {
+            Id = Guid.CreateVersion7(),
+            UserId = userId,
+            AIModelId = aIModelId,
+            Prompt = prompt,
+            ImageUrl = imageUrl,
+            CreatedAt = DateTimeOffset.UtcNow,
+            CreatedByUserId = userId.ToString(),
+            Style = IconStyle.Woodcut,
+        };
+    }
+
 }
